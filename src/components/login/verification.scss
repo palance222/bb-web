@@ -1,0 +1,45 @@
+.title-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 24px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // min-height: 100vh;
+}
+
+.input {
+  width: 40px;
+  border: none;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.5);
+  margin: 0 10px;
+  text-align: center;
+  font-size: 36px;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.input:focus {
+  border-bottom: 3px solid orange;
+  outline: none;
+}
+
+.input:nth-child(1) {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.btn{
+    margin-right: 20px;
+}

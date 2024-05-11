@@ -1,59 +1,25 @@
+import { Routes, Route } from "react-router";
+import { BrowserRouter } from "react-router-dom";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.bundle.min";
 import "./App.css";
 import Footer from "./components/footer";
+import { Login } from "./components/login/login";
+import { NavBar } from "./components/navBar";
+import NotFound from "./components/not-found";
+import { Verification } from "./components/login/verification";
 
 function App() {
   return (
     <>
-      <nav className="navbar navbar-expand-sm bg-light">
-        <div className="container-fluid">
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Home
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Accounts
-              </a>
-            </li>
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-              >
-                Dropdown
-              </a>
-              <ul className="dropdown-menu">
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Link
-                  </a>
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Another link
-                  </a>
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    A third link
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Transfer
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
+      <NavBar />
+      <BrowserRouter>
+        <Routes>
+          <Route path="*" Component={Login}></Route>
+          <Route path="/auth" Component={Verification}></Route>
+          <Route path="/not-found" Component={NotFound}></Route>
+        </Routes>
+      </BrowserRouter>
       <Footer />
     </>
   );
