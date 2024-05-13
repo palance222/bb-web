@@ -23,8 +23,9 @@ export function Login() {
     }
 
     auth.saveToken(login).then((data:any) => {
+      debugger;
       if (data && data.status === 'mfa') {
-        auth.setState(prevState => ({
+        auth.setState((prevState: any) => ({
           ...prevState,
           error: '',
           success: '',
@@ -37,7 +38,7 @@ export function Login() {
           pwd: login.password,
         }));
       } else {
-        auth.setState(prevState => ({
+        auth.setState((prevState: any) => ({
           ...prevState,
           error: 'Invalid username or password',
           success: '',
@@ -47,10 +48,10 @@ export function Login() {
     });
   }
 
-  const handleInput = (name:any) => (value:any) => {
+  const handleInput = (name:any) => (e:any) => {
     setLogin(prevState => ({
       ...prevState,
-      [name]: value,
+      [name]: e.target.value,
     }));
   };
 

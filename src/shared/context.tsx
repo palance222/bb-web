@@ -1,26 +1,28 @@
-import {createContext, useState, PropsWithChildren, useContext} from 'react';
+import {createContext, useState, useContext} from 'react';
 
 const initialState = {
     loading: false,
     token: '',
     error: '',
+    success: '',
     secure: '',
     pwd: '',
     clientId: ''
 };
 
-type UserData = {
+type StateData = {
     loading: boolean,
     token: string,
     error: string,
-    secure: string,
+    success: string,
+    secure: any,
     pwd: string,
     clientId: string
   };
 
 interface ContextProps {
-    readonly userData: UserData | null;
-    readonly setUserData: (userData: UserData) => void;
+    state: StateData | null;
+    readonly setState: (state: StateData) => void;
     readonly saveToken: (auth: any) => Promise<void>;
 }
 
@@ -28,14 +30,14 @@ const config = {
   API_URL: 'https://pa0ykzslfh.execute-api.ap-southeast-1.amazonaws.com/',
 }
   
-const MyContext = createContext<ContextProps>({
-    userData: null,
-    setUserData: () => null,
+const MyContext = createContext<any>({
+    state: null,
+    setState: () => null,
     saveToken: async () => {},
   });
 
-export const Provider = ({ children }: PropsWithChildren<{}>) => {
-    const [userData, setUserData] = useState<UserData>(initialState);
+export const Provider = ({ children }: any) => {
+    const [state, setState] = useState<any>(initialState);
 
     // Update AsyncStorage & context state
     const saveToken = async (auth:any) => {
@@ -61,8 +63,8 @@ export const Provider = ({ children }: PropsWithChildren<{}>) => {
 
     return (
         <MyContext.Provider value={{
-            userData,
-            setUserData,
+            state,
+            setState,
             saveToken
         }}>
             {children}
