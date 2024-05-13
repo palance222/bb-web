@@ -1,12 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {Context as context} from "../../shared/context"
 import "./login.scss";
 
 export function Login() {
   const auth = context();
+  let navigate = useNavigate();
   const [login, setLogin] = useState({username: "", password: "", "error": ""});
 
-  const onLogin = () => {
+  const onLogin = (event: any) => {
+    event.preventDefault();
     if (!login.username) {
       setLogin(prevState => ({
         ...prevState,
@@ -23,12 +26,10 @@ export function Login() {
     }
 
     auth.saveToken(login).then((data:any) => {
-      debugger;
       if (data && data.status === 'mfa') {
         auth.setState((prevState: any) => ({
           ...prevState,
           error: '',
-          success: '',
           loading: false,
           secure: {
             hash: data.hash,
@@ -37,11 +38,11 @@ export function Login() {
           },
           pwd: login.password,
         }));
+        return navigate("/auth");
       } else {
         auth.setState((prevState: any) => ({
           ...prevState,
           error: 'Invalid username or password',
-          success: '',
           loading: false,
         }));
       }
@@ -58,13 +59,15 @@ export function Login() {
   return (
     <>
     <div className="log-form">
+      {auth.state.error && <span>{auth.state.error}</span>}
       <div className="logo">
         <img src="src/assets/logo.png" alt="" />
       </div>
       <h2>Login to your account</h2>
-      <form>
-        <input type="text" title="username" placeholder="Username" />
-        <input type="password" title="username" placeholder="Password" />
+      {login.error && <span>{login.error}</span>}
+      <form onSubmit={onLogin}>
+        <input type="text" title="username" onChange={handleInput("username")} placeholder="Username" />
+        <input type="password" title="username" onChange={handleInput("password")} placeholder="Password" />
         <button type="submit" className="btn">
           Login
         </button>

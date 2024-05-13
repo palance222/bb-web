@@ -10,62 +10,64 @@ const initialState = {
     clientId: ''
 };
 
-type StateData = {
-    loading: boolean,
-    token: string,
-    error: string,
-    success: string,
-    secure: any,
-    pwd: string,
-    clientId: string
-  };
-
-interface ContextProps {
-    state: StateData | null;
-    readonly setState: (state: StateData) => void;
-    readonly saveToken: (auth: any) => Promise<void>;
-}
-
 const config = {
   API_URL: 'https://pa0ykzslfh.execute-api.ap-southeast-1.amazonaws.com/',
 }
   
-const MyContext = createContext<any>({
-    state: null,
-    setState: () => null,
-    saveToken: async () => {},
-  });
+const MyContext = createContext<any>(initialState);
 
 export const Provider = ({ children }: any) => {
     const [state, setState] = useState<any>(initialState);
 
-    // Update AsyncStorage & context state
     const saveToken = async (auth:any) => {
-    try {
-        const response = await fetch(config.API_URL + 'auth/login', {
-            method: 'POST',
-            headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: auth.username,
-                password: auth.password,
-            }),
-        });
-        const responseJson = await response.json();
-        return responseJson;
-        } catch (error) {
-            console.error(error);
+        try {
+            const response = await fetch(config.API_URL + 'auth/login', {
+                method: 'POST',
+                headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: auth.username,
+                    password: auth.password,
+                }),
+            });
+            const responseJson = await response.json();
+            return responseJson;
+        } catch(err) {
+            // catches errors both in fetch and response.json
+            console.log("api error", err)
         }
     };
 
+    const saveMFA = async (auth:any) => {
+        try {
+          const response = await fetch(config.API_URL + 'auth/password/mfa', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              username: auth.username,
+              code: auth.code,
+              hash: auth.hash,
+              session: auth.session,
+            }),
+          });
+          const responseJson = await response.json();
+          return responseJson;
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
     return (
         <MyContext.Provider value={{
             state,
             setState,
-            saveToken
+            saveToken,
+            saveMFA
         }}>
             {children}
         </MyContext.Provider>
