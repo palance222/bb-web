@@ -57,22 +57,19 @@ export function Login() {
 
   return (
     <>
-      <form onSubmit={onLogin} className="loginForm">
-        <div className="form-container">
-          {login.error && <div>{login.error}</div>}
-          <div className="form-group">
-            <label htmlFor="uname">Username:</label>
-            <input type="text" onChange={handleInput('username')} className="form-control" id="uname" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="pwd">Password:</label>
-            <input type="password" onChange={handleInput('password')} className="form-control" id="pwd" />
-          </div>
-          <button type="submit" style={{color:'#fff'}} className="btn btn-default" >
-            Login
-          </button>
-        </div>
+    <div className="log-form">
+      <div className="logo">
+        <img src="src/assets/logo.png" alt="" />
+      </div>
+      <h2>Login to your account</h2>
+      <form>
+        <input type="text" title="username" placeholder="Username" />
+        <input type="password" title="username" placeholder="Password" />
+        <button type="submit" className="btn">
+          Login
+        </button>
       </form>
-    </>
+    </div>
+  </>
   );
 }

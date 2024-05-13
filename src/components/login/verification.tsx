@@ -5,7 +5,7 @@ export function Verification() {
     <>
       <div className="title-container">
         <p>Verification</p>
-        <p>We sent youa SMS Code on your registered phone number with us</p>
+        <p>We sent your SMS Code on your registered phone number with us</p>
       </div>
       <div className="container">
         <div id="inputs" className="inputs">
