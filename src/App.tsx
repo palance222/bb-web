@@ -14,7 +14,7 @@ function App() {
   return (
     <>
     <Provider>
-      <NavBar />
+      {sessionStorage.getItem('logged') && <NavBar />}
       <BrowserRouter>
         <Routes>
           <Route path="/" Component={Login}></Route>

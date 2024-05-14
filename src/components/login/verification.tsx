@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {Context as context} from "../../shared/context"
 import "./verification.scss";
@@ -7,7 +7,40 @@ export function Verification() {
   const auth = context();
   let navigate = useNavigate();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [resendButtonDisabledTime, setResendButtonDisabledTime] = useState(0);
   const inputs = useRef<any>([]);
+  let resendOtpTimerInterval:any;
+
+  const confirmToSubmitOtp = () => {
+    let total = 0;
+    otp.filter((data:any) => data !== '' && total++)
+    return total === 6 ? false : true;
+  }
+
+  const isEnableConfirmButton = confirmToSubmitOtp();
+
+  useEffect(() => {
+    startResendOtpTimer();
+
+    return () => {
+      if (resendOtpTimerInterval) {
+        clearInterval(resendOtpTimerInterval);
+      }
+    };
+  }, [resendButtonDisabledTime]);
+
+  const startResendOtpTimer = () => {
+    if (resendOtpTimerInterval) {
+      clearInterval(resendOtpTimerInterval);
+    }
+    resendOtpTimerInterval = setInterval(() => {
+      if (resendButtonDisabledTime <= 0) {
+        clearInterval(resendOtpTimerInterval);
+      } else {
+        setResendButtonDisabledTime(resendButtonDisabledTime - 1);
+      }
+    }, 1000);
+  };
   
   const handleChange = (index:any) => (e:any) => {
     const newOtp = [...otp];
@@ -36,7 +69,54 @@ export function Verification() {
     inputs.current[index] = input;
   };
 
+  const onResend = () => {
+    if (inputs.current[0]) {
+      setOtp(['', '', '', '', '', '']);
+      inputs.current[0].focus();
+    }
+    if (auth.state.success) {
+      auth.setState((prevState:any) => ({
+        ...prevState,
+        success: '',
+      }));
+      setResendButtonDisabledTime(30);
+    } else {
+      callResendOtp();
+    }
+  };
+
+  const callResendOtp = () => {
+    auth.setState((prevState:any) => ({
+      ...prevState,
+      loading: true,
+    }));
+    auth
+      .saveToken({
+        username: auth.state.secure.username,
+        password: auth.state.pwd,
+      })
+      .then((data:any) => {
+        if (data && data.status === 'mfa') {
+          auth.setState((prevState:any) => ({
+            ...prevState,
+            error: '',
+            success: 'A new OTP has been sent to your mobile number',
+            loading: false,
+            secure: {
+              hash: data.hash,
+              session: data.session,
+              username: auth.state.secure.username,
+            },
+          }));
+        }
+      });
+  };
+
   const onConfirm = () => {
+    if (isEnableConfirmButton) {
+      return false;
+    }
+
     let params = {};
     params = {...auth.state.secure, code: otp.toString().split(',').join('')};
     auth.setState((prevState :any)=> ({
@@ -54,7 +134,7 @@ export function Verification() {
           sessionId: data.session.accessToken.JwtToken,
           clientId: data.clientuser.clientId,
         }));
-        //onVerification(data.clientuser.clientId);
+        sessionStorage.setItem('logged', "true")
         navigate('/not-found');
       } else {
         auth.setState((prevState :any) => ({
@@ -70,12 +150,35 @@ export function Verification() {
     });
   };
 
+  useEffect(() => {
+      setTimeout(() => {
+        if (inputs.current[0]) {
+          inputs.current[0].focus();
+        }
+      }, 60);
+  }, []);
+
   return (
     <>
       <div className="title-container">
         <p>Verification</p>
         <p>We sent your SMS Code on your registered phone number with us</p>
       </div>
+      {auth.state.success && resendButtonDisabledTime <= 0 && (
+        <div className="alert-box-center">
+          <div className="alert alert-success" role="alert">
+            {auth.state.success}
+          </div>
+        </div>
+        )}
+      {resendButtonDisabledTime > 0 && (
+        <div className="alert-box-center">
+          <div className="alert alert-info" role="alert">
+              Please wait {resendButtonDisabledTime} second(s) before requesting
+              a new One Time Password (OTP).
+          </div>
+        </div>
+      )}
       <div className="container">
         <div id="inputs" className="inputs">
         {otp.map((digit, index) => (
@@ -97,7 +200,8 @@ export function Verification() {
           type="submit"
           style={{ color: "#fff" }}
           className="btn btn-success"
-        >
+          onClick={onResend}
+          disabled={resendButtonDisabledTime > 0 ? true : false}>
           Resend
         </button>
         <button
@@ -105,6 +209,7 @@ export function Verification() {
           style={{ color: "#fff" }}
           className="btn btn-danger"
           onClick={onConfirm}
+          disabled={isEnableConfirmButton ? true: false}
         >
           Confirm
         </button>

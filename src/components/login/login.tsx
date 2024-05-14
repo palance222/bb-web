@@ -58,16 +58,24 @@ export function Login() {
 
   return (
     <>
+      {auth.state.error && (<div className="alert-box-center">
+        <div className="alert alert-danger" role="alert">{auth.state.error}</div>
+      </div>)}
     <div className="log-form">
-      {auth.state.error && <span>{auth.state.error}</span>}
       <div className="logo">
         <img src="src/assets/logo.png" alt="" />
       </div>
       <h2>Login to your account</h2>
-      {login.error && <span>{login.error}</span>}
       <form onSubmit={onLogin}>
-        <input type="text" title="username" onChange={handleInput("username")} placeholder="Username" />
-        <input type="password" title="username" onChange={handleInput("password")} placeholder="Password" />
+        <div className="col-md-12 position-relative">
+          <input type="text" className="form-control" required onChange={handleInput("username")} placeholder="Username" />
+          <div className="invalid-feedback">
+            hi
+          </div>
+        </div>
+        <div className="col-md-12">
+          <input type="password" title="username" className="form-control" required onChange={handleInput("password")} placeholder="Password" />
+        </div>
         <button type="submit" className="btn">
           Login
         </button>

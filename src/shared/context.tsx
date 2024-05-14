@@ -42,23 +42,23 @@ export const Provider = ({ children }: any) => {
 
     const saveMFA = async (auth:any) => {
         try {
-          const response = await fetch(config.API_URL + 'auth/password/mfa', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              username: auth.username,
-              code: auth.code,
-              hash: auth.hash,
-              session: auth.session,
-            }),
+            const response = await fetch(config.API_URL + 'auth/password/mfa', {
+                method: 'POST',
+                headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                username: auth.username,
+                code: auth.code,
+                hash: auth.hash,
+                session: auth.session,
+                }),
           });
           const responseJson = await response.json();
           return responseJson;
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
       };
 
@@ -83,4 +83,4 @@ export function Context() {
     //   throw new Error('useAuth must be used within an AuthProvider');
     // }
     return context;
-  }
+}
