@@ -9,6 +9,7 @@ import { Login } from "./components/login/login";
 import { NavBar } from "./components/navBar";
 import NotFound from "./components/not-found";
 import { Verification } from "./components/login/verification";
+import Home from "./components/home/home";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Routes>
           <Route path="/" Component={Login}></Route>
           <Route path="/auth" Component={Verification}></Route>
+          <Route path="/home" Component={Home}></Route>
           <Route path="/not-found" Component={NotFound}></Route>
         </Routes>
       </BrowserRouter>

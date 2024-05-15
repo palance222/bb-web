@@ -135,7 +135,7 @@ export function Verification() {
           clientId: data.clientuser.clientId,
         }));
         sessionStorage.setItem('logged', "true")
-        navigate('/not-found');
+        navigate('/home');
       } else {
         auth.setState((prevState :any) => ({
           ...prevState,
