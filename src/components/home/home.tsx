@@ -8,7 +8,7 @@ export default function Home() {
           <div className="row g-0 ">
             <div className="col-md-4 card-container">
               <img
-                src="src/assets/logo.png"
+                src="src/assets/account-icon.png"
                 className="img-fluid rounded-start"
                 alt="..."
               />
@@ -38,7 +38,7 @@ export default function Home() {
           <div className="row g-0 ">
             <div className="col-md-4 card-container">
               <img
-                src="src/assets/logo.png"
+                src="src/assets/transfer-icon.png"
                 className="img-fluid rounded-start"
                 alt="..."
               />
