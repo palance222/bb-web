@@ -5,7 +5,7 @@ export function NavBar() {
         <div className="container-fluid">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link" href="/login">
+              <a className="nav-link" href="/">
                 Home
               </a>
             </li>

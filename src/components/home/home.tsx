@@ -1,11 +1,19 @@
 import "./home.scss";
 
+import { useNavigate } from "react-router";
+
 export default function Home() {
+  let navigate = useNavigate();
+
+  const accountListPage = () => {
+    return navigate("/account-list");
+  };
+
   return (
     <>
       <div className="container">
         <div className="card mb-3" style={{ maxWidth: "540px" }}>
-          <div className="row g-0 ">
+          <div className="row g-0 " onClick={accountListPage}>
             <div className="col-md-4 card-container">
               <img
                 src="src/assets/account-icon.png"
@@ -19,16 +27,11 @@ export default function Home() {
                 <h5 className="card-title">Accounts</h5>
 
                 <p className="card-text">
-                  This is a wider card with supporting text below as a natural
-                  lead-in to additional content. This content is a little bit
-                  longer.
+                  Loan account <br />
+                  Deposit account <br />
+
                 </p>
 
-                <p className="card-text">
-                  <small className="text-body-secondary">
-                    Last updated 3 mins ago
-                  </small>
-                </p>
               </div>
             </div>
           </div>
@@ -49,15 +52,9 @@ export default function Home() {
                 <h5 className="card-title">Fund transfer</h5>
 
                 <p className="card-text">
-                  This is a wider card with supporting text below as a natural
-                  lead-in to additional content. This content is a little bit
-                  longer.
-                </p>
+                  Inter transfer <br />
+                  Intra transfer <br />
 
-                <p className="card-text">
-                  <small className="text-body-secondary">
-                    Last updated 3 mins ago
-                  </small>
                 </p>
               </div>
             </div>
