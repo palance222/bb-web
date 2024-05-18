@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-
-import { Context } from "../../shared/context";
-
-import { useNavigate } from "react-router";
+import { Context as context } from "../../shared/context";
+import { useNavigate } from "react-router-dom";
 
 export default function AccountList() {
-  const auth = Context();
+  const auth = context();
 
   let navigate = useNavigate();
 

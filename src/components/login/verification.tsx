@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {Context as context} from "../../shared/context"
+import {decrypt} from "../../shared/config"
 import "./verification.scss";
 
 export function Verification() {
@@ -93,7 +94,7 @@ export function Verification() {
     auth
       .saveToken({
         username: auth.state.secure.username,
-        password: auth.state.pwd,
+        password: decrypt(auth.state.pwd),
       })
       .then((data:any) => {
         if (data && data.status === 'mfa') {
@@ -121,17 +122,17 @@ export function Verification() {
     params = {...auth.state.secure, code: otp.toString().split(',').join('')};
     auth.setState((prevState :any)=> ({
       ...prevState,
-      loading: true,
+      confirmloading: true,
     }));
     auth.saveMFA(params).then((data:any) => {
       if (data.code && data.code === 'Successful') {
         auth.setState((prevState :any) => ({
           ...prevState,
-          loading: false,
+          confirmloading: false,
           secure: '',
           pwd: '',
           userName: data.clientuser.userName,
-          sessionId: data.session.accessToken.JwtToken,
+          sessionId: data.session.accessToken.jwtToken,
           clientId: data.clientuser.clientId,
         }));
         sessionStorage.setItem('logged', "true")
@@ -139,7 +140,7 @@ export function Verification() {
       } else {
         auth.setState((prevState :any) => ({
           ...prevState,
-          loading: false,
+          confirmloading: false,
           secure: '',
           sessionId: '',
           pwd: '',
@@ -201,17 +202,23 @@ export function Verification() {
           style={{ color: "#fff" }}
           className="btn btn-success"
           onClick={onResend}
-          disabled={resendButtonDisabledTime > 0 ? true : false}>
-          Resend
+          disabled={resendButtonDisabledTime > 0 ? true : (auth.state.loading? true : false)}>
+          {auth.state.loading ? <>
+            <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span role="status">Loading...</span>
+          </>: <>Resend</>}
         </button>
         <button
           type="submit"
           style={{ color: "#fff" }}
           className="btn btn-danger"
           onClick={onConfirm}
-          disabled={isEnableConfirmButton ? true: false}
+          disabled={isEnableConfirmButton ? true: (auth.state.confirmloading ? true: false)}
         >
-          Confirm
+          {auth.state.confirmloading ? <>
+            <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span role="status">Loading...</span>
+          </>: <>Confirm</>}
         </button>
       </div>
     </>

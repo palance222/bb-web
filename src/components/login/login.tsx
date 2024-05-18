@@ -1,49 +1,64 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {Context as context} from "../../shared/context"
+import {encrypt} from "../../shared/config"
 import "./login.scss";
 
 export function Login() {
   const auth = context();
   let navigate = useNavigate();
-  const [login, setLogin] = useState({username: "", password: "", "error": ""});
+  const [login, setLogin] = useState({username: "", password: "", "formerror": "", error: "", loading: false});
+
+  useEffect(() => {
+    if(sessionStorage.getItem('logged')) {
+      navigate('/not-found');
+    }
+  }, [sessionStorage.getItem('logged')])
 
   const onLogin = (event: any) => {
     event.preventDefault();
     if (!login.username) {
       setLogin(prevState => ({
         ...prevState,
-        'error': 'Please fill Username',
+        'formerror': 'Please fill Username',
       }));
       return;
     }
     if (!login.password) {
       setLogin(prevState => ({
         ...prevState,
-        'error': 'Please fill Password',
+        'formerror': 'Please fill Password',
       }));
       return;
     }
 
+    setLogin(prevState => ({
+      ...prevState,
+      'loading': true,
+      'formerror': ''
+    }));
     auth.saveToken(login).then((data:any) => {
       if (data && data.status === 'mfa') {
+        setLogin(prevState => ({
+          ...prevState,
+          'loading': false,
+          'formerror': ''
+        }));
         auth.setState((prevState: any) => ({
           ...prevState,
-          error: '',
-          loading: false,
           secure: {
             hash: data.hash,
             session: data.session,
             username: login.username,
           },
-          pwd: login.password,
+          pwd: encrypt(login.password),
         }));
         return navigate("/auth");
       } else {
-        auth.setState((prevState: any) => ({
+        setLogin(prevState => ({
           ...prevState,
+          'loading': false,
           error: 'Invalid username or password',
-          loading: false,
         }));
       }
     });
@@ -58,6 +73,9 @@ export function Login() {
 
   return (
     <>
+      {login.error && (<div className="alert-box-center">
+        <div className="alert alert-danger" role="alert">{login.error}</div>
+      </div>)}
       {auth.state.error && (<div className="alert-box-center">
         <div className="alert alert-danger" role="alert">{auth.state.error}</div>
       </div>)}
@@ -76,8 +94,11 @@ export function Login() {
         <div className="col-md-12">
           <input type="password" title="username" className="form-control" required onChange={handleInput("password")} placeholder="Password" />
         </div>
-        <button type="submit" className="btn">
-          Login
+        <button type="submit" className={login.loading ? "btn disabled": "btn"}>
+          {login.loading ? <>
+            <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span role="status">Loading...</span>
+          </>: <>Login</>}
         </button>
       </form>
     </div>
