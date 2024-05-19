@@ -21,6 +21,12 @@ export function Verification() {
   const isEnableConfirmButton = confirmToSubmitOtp();
 
   useEffect(() => {
+    if (!auth.state.pwd) {
+      navigate('/')
+    }
+  }, [auth.state.pwd])
+
+  useEffect(() => {
     startResendOtpTimer();
 
     return () => {

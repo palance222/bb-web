@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Navigate } from "react-router-dom";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.bundle.min";
 import "./App.css";
@@ -13,6 +14,21 @@ import Home from "./components/home/home";
 import AccountList from "./components/accounts/account-list";
 
 function App() {
+  useEffect(() => {
+    const handleOnUnload = (event:any) => {
+      event.preventDefault();
+      sessionStorage.removeItem("logged");
+    };
+    window.addEventListener('onbeforeunload', handleOnUnload);
+    return () => {
+      window.removeEventListener('onbeforeunload', handleOnUnload);
+    };
+  }, [sessionStorage.removeItem("logged")]);
+
+  const PrivateRoute = ({ children }: any) => {
+    return sessionStorage.getItem('logged') ? children : <Navigate to="/" replace />;
+  };
+
   return (
     <>
     <Provider>
@@ -21,8 +37,22 @@ function App() {
         <Routes>
           <Route path="/" Component={Login}></Route>
           <Route path="/auth" Component={Verification}></Route>
-          <Route path="/home" Component={Home}></Route>
-          <Route path="/account-list" Component={AccountList}></Route>
+          <Route
+            path="/home"
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/account-list"
+            element={
+              <PrivateRoute>
+                <AccountList />
+              </PrivateRoute>
+            }
+          />
           <Route path="/not-found" Component={NotFound}></Route>
         </Routes>
       </BrowserRouter>
