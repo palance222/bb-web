@@ -12,50 +12,63 @@ import NotFound from "./components/not-found";
 import { Verification } from "./components/login/verification";
 import Home from "./components/home/home";
 import AccountList from "./components/accounts/account-list";
+import AccountDetails from "./components/accounts/account-details";
 
 function App() {
   useEffect(() => {
-    const handleOnUnload = (event:any) => {
+    const handleOnUnload = (event: any) => {
       event.preventDefault();
       sessionStorage.removeItem("logged");
     };
-    window.addEventListener('onbeforeunload', handleOnUnload);
+    window.addEventListener("onbeforeunload", handleOnUnload);
     return () => {
-      window.removeEventListener('onbeforeunload', handleOnUnload);
+      window.removeEventListener("onbeforeunload", handleOnUnload);
     };
   }, [sessionStorage.removeItem("logged")]);
 
   const PrivateRoute = ({ children }: any) => {
-    return sessionStorage.getItem('logged') ? children : <Navigate to="/" replace />;
+    return sessionStorage.getItem("logged") ? (
+      children
+    ) : (
+      <Navigate to="/" replace />
+    );
   };
 
   return (
     <>
-    <Provider>
-      {sessionStorage.getItem('logged') && <NavBar />}
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" Component={Login}></Route>
-          <Route path="/auth" Component={Verification}></Route>
-          <Route
-            path="/home"
-            element={
-              <PrivateRoute>
-                <Home />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/account-list"
-            element={
-              <PrivateRoute>
-                <AccountList />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/not-found" Component={NotFound}></Route>
-        </Routes>
-      </BrowserRouter>
+      <Provider>
+        {sessionStorage.getItem("logged") && <NavBar />}
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" Component={Login}></Route>
+            <Route path="/auth" Component={Verification}></Route>
+            <Route
+              path="/home"
+              element={
+                <PrivateRoute>
+                  <Home />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/account-list"
+              element={
+                <PrivateRoute>
+                  <AccountList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/account-details"
+              element={
+                <PrivateRoute>
+                  <AccountDetails />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/not-found" Component={NotFound}></Route>
+          </Routes>
+        </BrowserRouter>
       </Provider>
       <Footer />
     </>

@@ -1,0 +1,18 @@
+.data-table tr {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid;
+  width: 200px;
+}
+
+.card {
+  .card-header {
+    background-color: #013f3b;
+    color: #fff;
+  }
+}
+
+.account-heading {
+  background-color: #e9ecef;
+  padding: 10px 10px;
+}

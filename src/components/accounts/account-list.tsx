@@ -1,34 +1,36 @@
 import { useEffect, useState } from "react";
+
 import { Context as context } from "../../shared/context";
+
 import { useNavigate } from "react-router-dom";
+
+import "./account-list.scss";
 
 export default function AccountList() {
   const auth = context();
 
   let navigate = useNavigate();
 
+  const accountDetailsPage = () => {
+    return navigate("/account-details");
+  };
+
   const [accountsData, setAccounts] = useState({
     loan: [],
-
     deposit: [],
-
     loanLoading: false,
-
     depositLoadng: false,
-
     clientDetails: "",
   });
 
   useEffect(() => {
     console.log("client id", auth);
-
     auth
       .findClient(auth.state.clientId)
       .then((data: { status: string; client: any }) => {
         if (data.status === "success") {
           setAccounts((prevState) => ({
             ...prevState,
-
             clientDetails: data.client,
           }));
         }
@@ -87,16 +89,6 @@ export default function AccountList() {
     });
   }, []);
 
-  console.log("account:", typeof accountsData);
-
-  console.log("account:", accountsData);
-
-  const objectList = Object.keys(accountsData).map((k: any) => (
-    <li key={k}>
-      <strong>{k}</strong>: {accountsData.loan}
-    </li>
-  ));
-
   return (
     <>
       <div className="account-heading" style={{ backgroundColor: "#77a19e" }}>
@@ -109,63 +101,55 @@ export default function AccountList() {
       </div>
 
       <div className="container">
-        <div className="card mb-3" style={{ maxWidth: "540px" }}>
-          <div className="row g-0 ">
-            <div className="col-md-4 card-container">
-              <img
-                src="src/assets/account-icon.png"
-                className="img-fluid rounded-start"
-                alt="..."
-              />
-            </div>
+        <div className="card border-success mb-3" style={{ maxWidth: "18rem" }}>
+          <div className="card-header">Loan Accounts </div>
 
-            <div className="col-md-8">
-              <div className="card-body">
-                <h5 className="card-title">Loan Accounts </h5>
+          <div className="card-body text-success">
+            {accountsData.loan.map((data: any) => {
+              return (
+                <>
+                  <table className="data-table">
+                    <tbody>
+                      <tr onClick={accountDetailsPage}>
+                        <td key={data.loanNumber}></td>
 
-                <p className="card-text">
-                  {/* {JSON.stringify(accountsData.loan[0])} */}
+                        <td key={data.principalBalance}>
+                          <span>Loan Balance: </span> 
+                        </td>
 
-                  {objectList}
-                </p>
-
-                <p className="card-text">
-                  <small className="text-body-secondary">
-                    Last updated 3 mins ago
-                  </small>
-                </p>
-              </div>
-            </div>
+                        <td key={data.productName}></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </>
+              );
+            })}
           </div>
         </div>
 
-        <div className="card mb-3" style={{ maxWidth: "540px" }}>
-          <div className="row g-0 ">
-            <div className="col-md-4 card-container">
-              <img
-                src="src/assets/transfer-icon.png"
-                className="img-fluid rounded-start"
-                alt="..."
-              />
-            </div>
+        <div className="card border-success mb-3" style={{ maxWidth: "18rem" }}>
+          <div className="card-header">Deposit Accounts </div>
 
-            <div className="col-md-8">
-              <div className="card-body">
-                <h5 className="card-title">Deposit Accounts</h5>
+          <div className="card-body text-success">
+            {accountsData.deposit.map((data: any) => {
+              return (
+                <>
+                  <table className="data-table">
+                    <tbody>
+                      <tr onClick={accountDetailsPage}>
+                        <td>{data.accountNumber}</td>
 
-                <p className="card-text">
-                  This is a wider card with supporting text below as a natural
-                  lead-in to additional content. This content is a little bit
-                  longer.
-                </p>
+                        <td>
+                          <span>Loan Balance: </span> {data.availableBalance}
+                        </td>
 
-                <p className="card-text">
-                  <small className="text-body-secondary">
-                    Last updated 3 mins ago
-                  </small>
-                </p>
-              </div>
-            </div>
+                        <td>{data.productName}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </>
+              );
+            })}
           </div>
         </div>
       </div>
