@@ -59,7 +59,7 @@ function App() {
               }
             />
             <Route
-              path="/account-details"
+              path="/account-details:id"
               element={
                 <PrivateRoute>
                   <AccountDetails />

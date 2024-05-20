@@ -97,6 +97,30 @@ export const Provider = ({ children }: any) => {
             console.error(error);
         }
     };
+/**
+ * 
+ * @param type Account details
+ * @param id 
+ * @returns 
+ */
+    const findAccounts = async (type:any, id:any) => {
+        try {
+          const response = await fetch(config.API_URL + type + '/account/find', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: id,
+            }),
+          });
+          const responseJson = await response.json();
+          return responseJson;
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
     return (
         <MyContext.Provider value={{
@@ -105,6 +129,7 @@ export const Provider = ({ children }: any) => {
             saveToken,
             findClient,
             listAccounts,
+            findAccounts,
             saveMFA
         }}>
             {children}

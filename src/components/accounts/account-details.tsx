@@ -1,4 +1,22 @@
+import { useEffect, useState } from "react";
+
+import { Context as context } from "../../shared/context";
 export default function AccountDetails() {
+
+  
+  const Accounts = ({route}:any) => {
+    const auth = context();
+  const [accountsData, setAccounts] = useState({
+    loan: {dataKey: 'loans', data: {}},
+    deposit: {dataKey: 'account', data: {}},
+  });
+    useEffect(() => {
+      auth.findAccounts(route.params.type, route.params.viewId).then((data:any) => {
+        setAccounts(data)
+      });
+    }, []);
+
+  };
   return (
     <>
       <div className="account-heading" style={{ backgroundColor: "#e9ecef" }}>

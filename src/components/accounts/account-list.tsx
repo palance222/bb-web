@@ -11,8 +11,9 @@ export default function AccountList() {
 
   let navigate = useNavigate();
 
-  const accountDetailsPage = () => {
-    return navigate("/account-details");
+  const accountDetailsPage = (params:any, type:string) => {
+    console.log("params",params);
+    return navigate(`/account-details:${params}`);
   };
 
   const [accountsData, setAccounts] = useState({
@@ -110,7 +111,7 @@ export default function AccountList() {
                 <>
                   <table className="data-table">
                     <tbody>
-                      <tr onClick={accountDetailsPage}>
+                      <tr onClick={accountDetailsPage(data.id,'loans')}>
                         <td key={data.loanNumber}></td>
 
                         <td key={data.principalBalance}>
