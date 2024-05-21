@@ -11,7 +11,7 @@ export function Login() {
 
   useEffect(() => {
     if(sessionStorage.getItem('logged')) {
-      navigate('/not-found');
+      navigate('/home');
     }
   }, [sessionStorage.getItem('logged')])
 

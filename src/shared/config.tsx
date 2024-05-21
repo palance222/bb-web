@@ -1,6 +1,6 @@
 import * as CryptoJS from 'crypto-js'
 
-const secretKey = import.meta.env.SEC_KEY ? import.meta.env.SEC_KEY : '12345'
+const secretKey = import.meta.env.VITE_SEC_KEY ? import.meta.env.VITE_SEC_KEY : '12345'
 
 export const encrypt = ( plainText: string ) => {
     const cipherText = CryptoJS.AES.encrypt(plainText, secretKey).toString()

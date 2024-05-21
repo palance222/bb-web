@@ -11,8 +11,8 @@ export default function AccountList() {
 
   let navigate = useNavigate();
 
-  const accountDetailsPage = (params:any, type:string) => {
-    console.log("params",params);
+  const accountDetailsPage = (params:any, type:string) => () => {
+    console.log("params",params, type);
     return navigate(`/account-details:${params}`);
   };
 
@@ -137,7 +137,7 @@ export default function AccountList() {
                 <>
                   <table className="data-table">
                     <tbody>
-                      <tr onClick={accountDetailsPage}>
+                      <tr onClick={accountDetailsPage(data.id,'depsoit')}>
                         <td>{data.accountNumber}</td>
 
                         <td>

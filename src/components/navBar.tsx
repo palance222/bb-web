@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 export function NavBar() {
   return (
     <>
@@ -5,34 +6,19 @@ export function NavBar() {
         <div className="container-fluid">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link" href="/home">
-                Home
-              </a>
+              <Link className="nav-link" to="/home">Home</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="">
-                Accounts
-              </a>
+              <Link className="nav-link" to="/">Accounts</Link>
             </li>
             <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-              >
-                Transfer
-              </a>
+              <Link className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" to="/">Transfer</Link>
               <ul className="dropdown-menu">
                 <li>
-                  <a className="dropdown-item" href="#">
-                    Inter-transfer
-                  </a>
+                  <Link className="dropdown-item" to="/">Inter-transfer</Link>
                 </li>
                 <li>
-                  <a className="dropdown-item" href="#">
-                    Intra-transfer
-                  </a>
+                  <Link className="dropdown-item" to="/">Intra-transfer</Link>
                 </li>
               </ul>
             </li>

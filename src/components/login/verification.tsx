@@ -4,7 +4,7 @@ import {Context as context} from "../../shared/context"
 import {decrypt} from "../../shared/config"
 import "./verification.scss";
 
-export function Verification() {
+export function Verification({checkLogIn} :any) {
   const auth = context();
   let navigate = useNavigate();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -142,7 +142,8 @@ export function Verification() {
           clientId: data.clientuser.clientId,
         }));
         sessionStorage.setItem('logged', "true")
-        navigate('/home');
+        checkLogIn()
+        navigate('/home', { replace: true });
       } else {
         auth.setState((prevState :any) => ({
           ...prevState,

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router";
 import { BrowserRouter, Navigate } from "react-router-dom";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
@@ -15,16 +15,27 @@ import AccountList from "./components/accounts/account-list";
 import AccountDetails from "./components/accounts/account-details";
 
 function App() {
+  const [isLogin, loggedIn] = useState(0);
+  
   useEffect(() => {
-    const handleOnUnload = (event: any) => {
-      event.preventDefault();
-      sessionStorage.removeItem("logged");
-    };
-    window.addEventListener("onbeforeunload", handleOnUnload);
+    if (!isLogin) {
+      sessionStorage.removeItem('logged')
+    }
+  }, [isLogin]);
+
+  const pageRefConf = ((event:any) => {
+    if (!sessionStorage.getItem('logged')) {
+      console.log('hi')
+      event.preventDefault()
+    }
+  })
+  
+  useEffect(() => {
+    window.addEventListener('beforeunload', pageRefConf)
     return () => {
-      window.removeEventListener("onbeforeunload", handleOnUnload);
-    };
-  }, [sessionStorage.removeItem("logged")]);
+      window.removeEventListener('beforeunload', pageRefConf)
+    }
+  }, [])
 
   const PrivateRoute = ({ children }: any) => {
     return sessionStorage.getItem("logged") ? (
@@ -34,14 +45,18 @@ function App() {
     );
   };
 
+  const onVerifyLogin = () => {
+    loggedIn(1)
+  }
+
   return (
     <>
       <Provider>
-        {sessionStorage.getItem("logged") && <NavBar />}
         <BrowserRouter>
+          {(isLogin && sessionStorage.getItem("logged")) ? <NavBar /> : ''}
           <Routes>
             <Route path="/" Component={Login}></Route>
-            <Route path="/auth" Component={Verification}></Route>
+            <Route path="/auth" element={<Verification checkLogIn={onVerifyLogin} />}></Route>
             <Route
               path="/home"
               element={
