@@ -122,6 +122,30 @@ export const Provider = ({ children }: any) => {
         }
       };
 
+      /**
+       * Recipient list api
+       * @param clientId 
+       * @returns 
+       */
+      const listRecipient = async (clientId:any) => {
+        try {
+          const response = await fetch(
+            config.API_URL + 'client/find/recipients?id=' + clientId,
+            {
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+            },
+          );
+          const responseJson = await response.json();
+          return responseJson;
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
     return (
         <MyContext.Provider value={{
             state,
@@ -130,6 +154,7 @@ export const Provider = ({ children }: any) => {
             findClient,
             listAccounts,
             findAccounts,
+            listRecipient,
             saveMFA
         }}>
             {children}

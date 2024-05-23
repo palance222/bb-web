@@ -9,6 +9,10 @@ export default function Home() {
     return navigate("/account-list");
   };
 
+  const recipientListPage = () => {
+    return navigate("/recipient-list");
+  };
+
   return (
     <>
       <div className="container">
@@ -38,7 +42,7 @@ export default function Home() {
         </div>
 
         <div className="card mb-3" style={{ maxWidth: "540px" }}>
-          <div className="row g-0 ">
+          <div className="row g-0 " onClick={recipientListPage}>
             <div className="col-md-4 card-container">
               <img
                 src="src/assets/transfer-icon.png"

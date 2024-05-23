@@ -13,6 +13,7 @@ import { Verification } from "./components/login/verification";
 import Home from "./components/home/home";
 import AccountList from "./components/accounts/account-list";
 import AccountDetails from "./components/accounts/account-details";
+import { RecipientList } from "./components/transfers/recipient-list";
 
 function App() {
   const [isLogin, loggedIn] = useState(0);
@@ -81,6 +82,15 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route
+              path="/recipient-list"
+              element={
+                <PrivateRoute>
+                  <RecipientList />
+                </PrivateRoute>
+              }
+            />
+
             <Route path="/not-found" Component={NotFound}></Route>
           </Routes>
         </BrowserRouter>
