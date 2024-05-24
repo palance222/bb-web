@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
-
 import { Context as context } from "../../shared/context";
-
 import { useNavigate } from "react-router-dom";
-
 import "./account-list.scss";
 
 export default function AccountList() {
   const auth = context();
-
   let navigate = useNavigate();
 
-  const accountDetailsPage = (params:any, type:string) => () => {
-    console.log("params",params, type);
-    return navigate(`/account-details:${params}`);
+  const accountDetailsPage = (viewId:any, type:string, type1:string) => () => {
+    //return navigate(`/account-details:${params}`);
+    // return navigate({
+    //   pathname: "/account-details",
+    //   search: createSearchParams({ id: params, type: type }).toString() 
+    // })
+    return navigate("/account-details", {
+      state:{
+          viewId,
+          type,
+          type1
+        },
+    });
   };
 
   const [accountsData, setAccounts] = useState({
@@ -25,7 +31,6 @@ export default function AccountList() {
   });
 
   useEffect(() => {
-    console.log("client id", auth);
     auth
       .findClient(auth.state.clientId)
       .then((data: { status: string; client: any }) => {
@@ -41,7 +46,6 @@ export default function AccountList() {
   useEffect(() => {
     setAccounts((prevState) => ({
       ...prevState,
-
       loanLoading: true,
     }));
 
@@ -49,15 +53,12 @@ export default function AccountList() {
       if (data?.loans?.length) {
         setAccounts((prevState) => ({
           ...prevState,
-
           loan: data.loans,
-
           loanLoading: false,
         }));
       } else {
         setAccounts((prevState) => ({
           ...prevState,
-
           loanLoading: false,
         }));
       }
@@ -67,7 +68,6 @@ export default function AccountList() {
   useEffect(() => {
     setAccounts((prevState) => ({
       ...prevState,
-
       depositLoading: true,
     }));
 
@@ -75,15 +75,12 @@ export default function AccountList() {
       if (data?.accounts?.length) {
         setAccounts((prevState) => ({
           ...prevState,
-
           deposit: data.accounts,
-
           depositLoading: false,
         }));
       } else {
         setAccounts((prevState) => ({
           ...prevState,
-
           depositLoading: false,
         }));
       }
@@ -94,30 +91,26 @@ export default function AccountList() {
     <>
       <div className="account-heading" style={{ backgroundColor: "#77a19e" }}>
         <h3>Welcome to Bayanihan Bank</h3>
-
         <p>
           Account:
           <span>{auth.state.userName ? " " + auth.state.userName : ""}</span>
         </p>
       </div>
-
-      <div className="container">
-        <div className="card border-success mb-3" style={{ maxWidth: "18rem" }}>
+      <br />
+      <div>
+        <div className="card border-success mb-3" style={{ width: "100%" }}>
           <div className="card-header">Loan Accounts </div>
-
           <div className="card-body text-success">
             {accountsData.loan.map((data: any) => {
               return (
                 <>
-                  <table className="data-table">
+                  <table className="table table-hover">
                     <tbody>
-                      <tr onClick={accountDetailsPage(data.id,'loans')}>
+                      <tr onClick={accountDetailsPage(data.accountId,'loan', 'payments')}>
                         <td key={data.loanNumber}></td>
-
                         <td key={data.principalBalance}>
                           <span>Loan Balance: </span> 
                         </td>
-
                         <td key={data.productName}></td>
                       </tr>
                     </tbody>
@@ -128,22 +121,19 @@ export default function AccountList() {
           </div>
         </div>
 
-        <div className="card border-success mb-3" style={{ maxWidth: "18rem" }}>
+        <div className="card border-success mb-3" style={{ width: "100%" }}>
           <div className="card-header">Deposit Accounts </div>
-
           <div className="card-body text-success">
             {accountsData.deposit.map((data: any) => {
               return (
                 <>
-                  <table className="data-table">
+                  <table className="table table-hover">
                     <tbody>
-                      <tr onClick={accountDetailsPage(data.id,'depsoit')}>
+                      <tr onClick={accountDetailsPage(data.accountId,'deposit', 'transactions')}>
                         <td>{data.accountNumber}</td>
-
                         <td>
                           <span>Loan Balance: </span> {data.availableBalance}
                         </td>
-
                         <td>{data.productName}</td>
                       </tr>
                     </tbody>

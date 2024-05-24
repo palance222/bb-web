@@ -1,60 +1,269 @@
 import { useEffect, useState } from "react";
-
+import { useLocation } from "react-router-dom";
 import { Context as context } from "../../shared/context";
-export default function AccountDetails() {
 
-  
-  const Accounts = ({route}:any) => {
-    const auth = context();
-  const [accountsData, setAccounts] = useState({
+const Accounts = () => {
+  const auth = context();
+  let route =  useLocation(); 
+  const [accountsData, setAccounts] = useState<any>({
     loan: {dataKey: 'loans', data: {}},
     deposit: {dataKey: 'account', data: {}},
   });
-    useEffect(() => {
-      auth.findAccounts(route.params.type, route.params.viewId).then((data:any) => {
-        setAccounts(data)
-      });
-    }, []);
 
+  const dateFormatter = (data:any) => {
+    const date = new Date(data);
+    const month:any = date.toLocaleString('default', {month: 'numeric'});
+    const year:any = date.toLocaleString('default', {year: 'numeric'});
+    return (month > 9 ? month : ('0' + month)) + '-' + date.getDate() + '-' + year;
   };
+
+  const columns:any = {
+    loans: [
+      {
+        loanNumber: {
+          text: 'Loan Number',
+          style: {fontSize: 16, fontWeight: 'bold'},
+        },
+      },
+      {
+        productName: {
+          text: 'Loan Poduct Name',
+          style: {fontSize: 16, fontWeight: 'bold'},
+        },
+      },
+      {principalBalance: {text: 'Loan Balance', style: {fontSize: 16}}},
+      {
+        branchName: {
+          text: 'Loan Branch Name',
+          style: {fontSize: 16, fontWeight: 'bold'},
+        },
+      },
+      {
+        maturityDate: {
+          text: 'Maturity Date',
+          style: {fontSize: 16, fontWeight: 'bold'},
+          formatter: dateFormatter,
+        },
+      },
+      {
+        grantDate: {
+          text: 'Next Payment Due Date',
+          style: {fontSize: 16, fontWeight: 'bold'},
+          formatter: dateFormatter,
+        },
+      },
+      {
+        status: {
+          text: 'Loan Status',
+          style: {fontSize: 16, fontWeight: 'bold'},
+        },
+      },
+      {term: {text: 'Tenure', style: {fontSize: 16}}},
+    ],
+    account: [
+      {
+        accountNumber: {
+          text: 'Account Number',
+          style: {fontSize: 16, fontWeight: 'bold'},
+        },
+      },
+      {
+        productName: {
+          text: 'Deposit Name',
+          style: {fontSize: 16, fontWeight: 'bold'},
+        },
+      },
+      {availableBalance: {text: 'Available Balance', style: {fontSize: 16}}},
+      {
+        branchName: {
+          text: 'Account Branch Name',
+          style: {fontSize: 16, fontWeight: 'bold'},
+        },
+      },
+      {
+        maturityDate: {
+          text: 'Maturity Date',
+          style: {fontSize: 16, fontWeight: 'bold'},
+          formatter: dateFormatter,
+        },
+      },
+      {
+        interestBalance: {
+          text: 'Interest Balance',
+          style: {fontSize: 16, fontWeight: 'bold'},
+        },
+      },
+      {term: {text: 'Tenure', style: {fontSize: 16}}},
+    ],
+  };
+
+  const columns1:any = {
+    payments: [
+      {
+        postedDate: {
+          text: 'Payment Date',
+          style: {fontSize: 16, fontWeight: 'bold'},
+          formatter: dateFormatter,
+        },
+      },
+      {amount: {text: 'Amount', style: {fontSize: 16}}},
+    ],
+    transactions: [
+      {
+        postedDate: {
+          text: 'Payment Date',
+          style: {fontSize: 14, fontWeight: 'bold'},
+          formatter: dateFormatter,
+        },
+      },
+      {
+        transactionType: {
+          text: 'Type',
+          style: {fontSize: 14},
+        },
+      },
+      {amount: {text: 'Amount', style: {fontSize: 14}}},
+    ],
+  };
+  
+  const method = accountsData[route.state.type];
+  const details = method['data'] ? method['data'] : {};
+  useEffect(() => {
+    auth.findAccounts(route.state.type, route.state.viewId).then((data:any) => {
+      setAccounts((prevState:any) => {
+        if (method.dataKey === 'loans') {
+          return {
+            ...prevState,
+            [route.state.type]: {...method, data: data['loan']},
+          };
+        } else {
+          return {
+            ...prevState,
+            [route.state.type]: {...method, data: data[method['dataKey']]},
+          };
+        }
+      });
+    });
+  }, []);
+
+  const [transData, setTrans] = useState<any>({
+    loan: {dataKey: 'payments', data: [], search: []},
+    deposit: {dataKey: 'transactions', data: [], search: []},
+    loading: false,
+  });
+  const [query, setQuery] = useState<any>('');
+
+  const method2 = transData[route.state.type];
+  const details2 = method2['data'] ? method2['data'] : [];
+  const search = method2['search'] ? method2['search'] : [];
+
+  useEffect(() => {
+    setTrans((prevState:any) => ({
+      ...prevState,
+      loading: true,
+    }));
+    auth
+      .listTrans(route.state.type, route.state.type1, route.state.viewId)
+      .then((data:any) => {
+        setTrans((prevState:any) => {
+          return {
+            ...prevState,
+            [route.state.type]: {
+              ...method2,
+              data: data[route.state.type1],
+              search: data[route.state.type1],
+            },
+            loading: false,
+          };
+        });
+      });
+  }, []);
+
+  const handleSearch = (text:any) => {
+    const formattedQuery = text.target.value;
+    let filteredData = details2.filter((item:any) => {
+      return dateFormatter(item.postedDate).includes(formattedQuery);
+    });
+
+    if (text === '') {
+      filteredData = details2;
+    }
+    setTrans((prevState:any) => {
+      return {
+        ...prevState,
+        [route.state.type]: {...method2, search: filteredData},
+        loading: false,
+      };
+    });
+    setQuery(formattedQuery);
+  };
+
+  
   return (
     <>
       <div className="account-heading" style={{ backgroundColor: "#e9ecef" }}>
         <h3>Loan details</h3>
       </div>
-      <div className="container" style={{ backgroundColor: "#e9ecef" }}>
-        <p>Loan Number: 001-HL-30013896-2</p>
-        <p>Loan Product Name: Home loans</p>
-        <p>Loan Balance: 951218.29</p>
-        <p>Loan Branch name: Atimonan</p>
-        <p>Maturity Date: 09-14-2026</p>
-        <p>Next Payment Due Date: 08-28-2023</p>
-        <p>Loan Status: ACTIVE</p>
-        <p>Tenure: 36</p>
+      {Object.keys(details).length ? (
+        <ul className="list-group mb-3">
+          {columns[method['dataKey']].map((item:any, index:any) => {
+            const keyItem = Object.keys(item)[0];
+            return (
+              <li key={index} className="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                  <h6 className="my-0">{item[keyItem].text}</h6>
+                </div>
+                <span className="text-body-secondary">{item[keyItem].formatter ? item[keyItem].formatter(details[keyItem]) : details[keyItem]}</span>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (<div className="container">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
       </div>
-      <div className="container">
+      )}
+      <div className="card p-2">
+        <div className="input-group">
+          <input
+            className="form-control"
+            autoCapitalize="none"
+            value={query}
+            onChange={handleSearch}
+            placeholder="Search by payment date (mm-dd-yyyy)"
+          />
+        </div>
+      </div>
         <table className="table table-striped">
           <thead>
             <tr>
-              <th scope="col">Payment date</th>
-              <th scope="col">Amount</th>
+              {columns1[method2['dataKey']].map((item:any, index:any) => {
+                const keyItem = Object.keys(item)[0];
+                return (
+                  <th key={index} scope="col">{item[keyItem].text}</th>
+                )
+              })}
             </tr>
           </thead>
-
           <tbody>
-            <tr>
-              <td>08-28-2023</td>
-              <td>951.00</td>
-            </tr>
-
-            <tr>
-              <td>08-28-2023</td>
-
-              <td>951.00</td>
-            </tr>
+            {search.map((data: any) => {
+              return (
+                <tr>
+                  {columns1[method2['dataKey']].map((item:any, index:any) => {
+                  const keyItem = Object.keys(item)[0];
+                  return (
+                    <td key={index} scope="row">{data[keyItem]}</td>
+                  )
+                })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-      </div>
     </>
   );
 }
+
+export default Accounts;
+

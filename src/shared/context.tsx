@@ -146,6 +146,28 @@ export const Provider = ({ children }: any) => {
         }
       };
 
+      const listTrans = async (type1:any, type2:any, clientId:any) => {
+        try {
+          const response = await fetch(
+            config.API_URL + type1 + '/account/' + type2,
+            {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: clientId,
+              }),
+            },
+          );
+          const responseJson = await response.json();
+          return responseJson;
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
     return (
         <MyContext.Provider value={{
             state,
@@ -155,7 +177,8 @@ export const Provider = ({ children }: any) => {
             listAccounts,
             findAccounts,
             listRecipient,
-            saveMFA
+            saveMFA,
+            listTrans
         }}>
             {children}
         </MyContext.Provider>

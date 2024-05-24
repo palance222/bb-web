@@ -51,7 +51,7 @@ function App() {
   }
 
   return (
-    <>
+    <div className="container">
       <Provider>
         <BrowserRouter>
           {(isLogin && sessionStorage.getItem("logged")) ? <NavBar /> : ''}
@@ -75,7 +75,7 @@ function App() {
               }
             />
             <Route
-              path="/account-details:id"
+              path="/account-details"
               element={
                 <PrivateRoute>
                   <AccountDetails />
@@ -96,7 +96,7 @@ function App() {
         </BrowserRouter>
       </Provider>
       <Footer />
-    </>
+    </div>
   );
 }
 
