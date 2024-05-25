@@ -14,6 +14,7 @@ import Home from "./components/home/home";
 import AccountList from "./components/accounts/account-list";
 import AccountDetails from "./components/accounts/account-details";
 import { RecipientList } from "./components/transfers/recipient-list";
+import { AddRecipient } from "./components/transfers/add-recipient";
 
 function App() {
   const [isLogin, loggedIn] = useState(0);
@@ -88,6 +89,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <RecipientList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/add-recipient"
+              element={
+                <PrivateRoute>
+                  <AddRecipient />
                 </PrivateRoute>
               }
             />

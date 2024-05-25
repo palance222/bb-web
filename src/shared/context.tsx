@@ -168,6 +168,25 @@ export const Provider = ({ children }: any) => {
         }
       };
 
+      const getPesonetBanklist = async () => {
+        try {
+          const response = await fetch(
+            config.API_URL + '/deposit/transaction/pesonet/banklist',
+            {
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+            },
+          );
+          const responseJson = await response.json();
+          return responseJson;
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
     return (
         <MyContext.Provider value={{
             state,
@@ -177,6 +196,7 @@ export const Provider = ({ children }: any) => {
             listAccounts,
             findAccounts,
             listRecipient,
+            getPesonetBanklist,
             saveMFA,
             listTrans
         }}>

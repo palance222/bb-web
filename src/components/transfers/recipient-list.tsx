@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Context as context } from "../../shared/context";
 import "./recipient-list.scss";
+import { useNavigate } from "react-router";
 
 export function RecipientList() {
   const auth = context();
@@ -8,74 +9,9 @@ export function RecipientList() {
     loading: false,
     receipientDetails: [],
   });
-
-  const data = {
-    status: "success",
-    recipients: [
-      {
-        id: "714325e3-bbb4-11ee-b37f-02a955dfe814",
-        firstName: "Sathish",
-        lastName: "Peso123",
-        accountNumber: "123412341234",
-        is_intrabank: 0,
-        bic: "DMBNPHM1XXX",
-        name: "DM Bank",
-      },
-      {
-        id: "22ebff91-baec-11ee-b37f-02a955dfe814",
-        firstName: "Sathish",
-        lastName: "Pesonet2",
-        accountNumber: "123456",
-        is_intrabank: 0,
-        bic: "DMBNPHM1XXX",
-        name: "DM Bank",
-      },
-      {
-        id: "a08da80c-bae7-11ee-b37f-02a955dfe814",
-        firstName: "Sathish",
-        lastName: "Pesonet",
-        accountNumber: "1234567890",
-        is_intrabank: 0,
-        bic: "DMBNPHM1XXX",
-        name: "DM Bank",
-      },
-      {
-        id: "df88160a-baac-11ee-b37f-02a955dfe814",
-        firstName: "Push",
-        lastName: "M",
-        accountNumber: "123498765",
-        is_intrabank: 0,
-        bic: "DMBNPHM1XXX",
-        name: "DM Bank",
-      },
-      {
-        id: "2865d3da-920d-11ee-b37f-02a955dfe814",
-        firstName: "Bea",
-        lastName: "Marie",
-        accountNumber: "001-51-492789-11",
-        is_intrabank: 1,
-        bic: null,
-        name: null,
-      },
-      {
-        id: "df883a05-8ed6-11ee-b37f-02a955dfe814",
-        firstName: "Murugan",
-        lastName: "M",
-        accountNumber: "007-51-265653-4",
-        is_intrabank: 1,
-        bic: null,
-        name: null,
-      },
-      {
-        id: "5cda72fe-8e01-11ee-b37f-02a955dfe814",
-        firstName: "Rajeshwari",
-        lastName: "M",
-        accountNumber: "001-51-10012157-2",
-        is_intrabank: 1,
-        bic: null,
-        name: null,
-      },
-    ],
+  let navigate = useNavigate();
+  const addRecipientPage = () => {
+    return navigate("/add-recipient");
   };
 
   useEffect(() => {
@@ -103,7 +39,7 @@ export function RecipientList() {
   return (
     <>
     <div className="btn-container">
-         <p> <td className="arrow"><button className="btn btn-success">Add Recipeint</button></td></p>
+         <p> <td className="arrow"><button className="btn btn-success" onClick={addRecipientPage}>Add Recipeint</button></td></p>
         </div>
       <div className="container">
 
