@@ -185,7 +185,7 @@ const Accounts = () => {
       return dateFormatter(item.postedDate).includes(formattedQuery);
     });
 
-    if (text === '') {
+    if (formattedQuery === '') {
       filteredData = details2;
     }
     setTrans((prevState:any) => {
@@ -197,71 +197,88 @@ const Accounts = () => {
     });
     setQuery(formattedQuery);
   };
-
-  
+ 
   return (
-    <>
-      <div className="account-heading" style={{ backgroundColor: "#e9ecef" }}>
-        <h3>Loan details</h3>
-      </div>
+    <div className="width100">
+      <h1 className="mt-1 mb-4">Loan details</h1>
       {Object.keys(details).length ? (
-        <ul className="list-group mb-3">
-          {columns[method['dataKey']].map((item:any, index:any) => {
-            const keyItem = Object.keys(item)[0];
-            return (
-              <li key={index} className="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                  <h6 className="my-0">{item[keyItem].text}</h6>
-                </div>
-                <span className="text-body-secondary">{item[keyItem].formatter ? item[keyItem].formatter(details[keyItem]) : details[keyItem]}</span>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="col-md-6">
+          <ul className="list-group bg-body-tertiary border rounded-3 mb-3">
+            {columns[method['dataKey']].map((item:any, index:any) => {
+              const keyItem = Object.keys(item)[0];
+              return (
+                <li key={index} className="list-group-item d-flex justify-content-between lh-sm">
+                  <div>
+                    <h6 className="my-0">{item[keyItem].text}</h6>
+                  </div>
+                  <span className="text-body-secondary">{item[keyItem].formatter ? item[keyItem].formatter(details[keyItem]) : details[keyItem]}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       ) : (<div className="container">
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
       </div>
       )}
-      <div className="card p-2">
-        <div className="input-group">
-          <input
-            className="form-control"
-            autoCapitalize="none"
-            value={query}
-            onChange={handleSearch}
-            placeholder="Search by payment date (mm-dd-yyyy)"
-          />
+      <div className="col-md-4">
+        <div className="bg-body-tertiary border rounded-3 mb-3">
+          <div className="input-group">
+            <input
+              className="form-control"
+              autoCapitalize="none"
+              value={query}
+              onChange={handleSearch}
+              placeholder="Search by payment date (mm-dd-yyyy)"
+            />
+          </div>
         </div>
       </div>
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              {columns1[method2['dataKey']].map((item:any, index:any) => {
+      <table className="table">
+        <thead className="table-light">
+          <tr>
+            {columns1[method2['dataKey']].map((item:any, index:any) => {
+              const keyItem = Object.keys(item)[0];
+              return (
+                <th key={index} scope="col">{item[keyItem].text}</th>
+              )
+            })}
+          </tr>
+        </thead>
+        <tbody>
+          {search.map((data: any) => {
+            return (
+              <tr>
+                {columns1[method2['dataKey']].map((item:any, index:any) => {
                 const keyItem = Object.keys(item)[0];
                 return (
-                  <th key={index} scope="col">{item[keyItem].text}</th>
+                  <td key={index} scope="row">{data[keyItem]}</td>
                 )
               })}
+              </tr>
+            );
+          })}
+          {transData.loading && 
+            <tr>
+              <td colSpan={3} className="text-center">
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {search.map((data: any) => {
-              return (
-                <tr>
-                  {columns1[method2['dataKey']].map((item:any, index:any) => {
-                  const keyItem = Object.keys(item)[0];
-                  return (
-                    <td key={index} scope="row">{data[keyItem]}</td>
-                  )
-                })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-    </>
+          }
+          {(!search.length && !transData.loading) &&
+            <tr>
+              <td className="text-center pt-3 pb-3 border-bottom" colSpan={3}>
+                No records
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   );
 }
 
