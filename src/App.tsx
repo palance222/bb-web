@@ -22,7 +22,6 @@ function App() {
   useEffect(() => {
     if (!isLogin) {
       sessionStorage.removeItem('logged')
-      //window.location.href='login';
     }
   }, [isLogin]);
 

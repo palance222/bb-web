@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Context as context } from "../../shared/context";
+import {Modal} from 'bootstrap'
+import Modals from "../../shared/modal";
 import "./add-recipient.scss";
 
 export function AddRecipient(this: any) {
   const auth = context();
+  const show = useRef<any>();
+  let navigate = useNavigate();
   const [radioValue, setRadiovalue] = useState("Intrabank");
   const transferCheck = (e: any) => {
     setRadiovalue(e.target.value);
@@ -20,13 +25,14 @@ export function AddRecipient(this: any) {
     banks: [],
     bic: '',
     bankname: '',
+    formerror: '',
   });
 
   useEffect(() => {
-    // if (state.transferType) {
       setAdd(prevState => ({
         ...prevState,
         loading: true,
+        error: ''
       }));
       auth.getPesonetBanklist().then((data: any) => {
         console.log("bank list",data);
@@ -35,17 +41,109 @@ export function AddRecipient(this: any) {
             ...prevState,
             banks: data.banks,
             loading: false,
+            error: ''
           }));
         }
       });
     // }
   }, []);
 
+  const handleChange = (name:any) => (e:any) => {
+    setAdd(prevState => ({
+      ...prevState,
+      [name]: e.target.value,
+      error: ''
+    }));
+  };
+
+  const onAdd = (event: any) => {
+    event.preventDefault();
+    if (!state.firstname) {
+      setAdd(prevState => ({
+        ...prevState,
+        formerror: 'Please enter first name',
+        error: ''
+      }));
+      return;
+    }
+    if (!state.lastname) {
+      setAdd(prevState => ({
+        ...prevState,
+        formerror: 'Please enter last name',
+        error: ''
+      }));
+      return;
+    }
+    if (!state.accountnumber) {
+      setAdd(prevState => ({
+        ...prevState,
+        formerror: 'Please enter account number',
+        error: ''
+      }));
+      return;
+    }
+    if (!state.confirmaccountnumber) {
+      setAdd(prevState => ({
+        ...prevState,
+        formerror: 'Please enter confirm account number',
+      }));
+      return;
+    }
+    if (state.accountnumber !== state.confirmaccountnumber) {
+      setAdd(prevState => ({
+        ...prevState,
+        formerror: 'Confirm account number doesn\'t match the account number',
+        error: ''
+      }));
+      return;
+    }
+
+    const bsModal = new Modal(show.current, {
+        backdrop: 'static',
+        keyboard: false,
+    })
+    bsModal.show()
+ }
+
+  const onConfirmAdd = () => {
+    setAdd(prevState => ({
+      ...prevState,
+      loading: true,
+      error: ''
+    }));
+
+    auth.addRecipient(state, auth.state.clientId).then((data:any) => {
+      if (data && data.status === 'success') {
+        setAdd(prevState => ({
+          ...prevState,
+          loading: false,
+          error: ''
+        }));
+        navigate('/recipient-list');
+      } else {
+        setAdd(prevState => ({
+          ...prevState,
+          loading: false,
+          error: data.code,
+        }));
+      }
+    });
+  };
+
+  const onCancel = () => {
+    navigate('/recipient-list');
+  }
+
   return (
     <>
       <div className="add-container">
+        {state.error && (<div className="alert-box-center">
+          <div className="alert alert-danger" role="alert">{state.error}</div>
+        </div>)}
+        <Modals modalId={show} title="Are you sure to add the recipient" onConfirm={onConfirmAdd} />
         <h3>Create recipient</h3>
         <div className="form-container">
+          <form onSubmit={onAdd}>
           <div className="rd">
             <div className="form-check">
               <input
@@ -93,26 +191,38 @@ export function AddRecipient(this: any) {
             className="form-control"
             type="text"
             placeholder="First name"
+            required
+            onChange={handleChange('firstname')}
           ></input>
+          {!state.firstname && <div className="invalid-feedback">
+            Please provide a first name.
+          </div>}
           <input
             className="form-control"
             type="text"
             placeholder="Last name"
+            required
+            onChange={handleChange('lastname')}
           ></input>
           <input
             className="form-control"
             type="text"
+            required
             placeholder="Account number"
+            onChange={handleChange('accountnumber')}
           ></input>
           <input
             className="form-control"
             type="text"
+            required
             placeholder="confirm account number"
+            onChange={handleChange('confirmaccountnumber')}
           ></input>
           <div className="btn">
-            <button className="btn btn-success">Add </button>
-            <button className="btn btn-success">Cancel</button>
+            <button type="submit" className="btn btn-success">Add </button>
+            <button onClick={onCancel} className="btn btn-success">Cancel</button>
           </div>
+          </form>
         </div>
       </div>
     </>

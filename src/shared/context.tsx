@@ -187,6 +187,36 @@ export const Provider = ({ children }: any) => {
         }
       };
 
+      const addRecipient = async (auth:any, clientid:any) => {
+        let data = {
+          clientid: clientid.toString(),
+          firstname: auth.firstname,
+          lastname: auth.lastname,
+          accountnumber: auth.accountnumber,
+          isintrabank: !auth.transferType
+        }
+        if (auth.transferType) {
+          data = {...data, ...{
+            bic: auth.bic,
+            bankname: auth.bankname
+          }}
+        }
+        try {
+          const response = await fetch(config.API_URL + 'recipient/add', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          });
+          const responseJson = await response.json();
+          return responseJson;
+        } catch (error) {
+          console.error('error', error);
+        }
+      };
+
     return (
         <MyContext.Provider value={{
             state,
@@ -198,7 +228,8 @@ export const Provider = ({ children }: any) => {
             listRecipient,
             getPesonetBanklist,
             saveMFA,
-            listTrans
+            listTrans,
+            addRecipient
         }}>
             {children}
         </MyContext.Provider>
