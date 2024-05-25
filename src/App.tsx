@@ -21,6 +21,7 @@ function App() {
   useEffect(() => {
     if (!isLogin) {
       sessionStorage.removeItem('logged')
+      //window.location.href='login';
     }
   }, [isLogin]);
 
@@ -51,7 +52,7 @@ function App() {
   }
 
   return (
-    <div className="container">
+    <div className="container py-3">
       <Provider>
         <BrowserRouter>
           {(isLogin && sessionStorage.getItem("logged")) ? <NavBar /> : ''}
@@ -90,7 +91,6 @@ function App() {
                 </PrivateRoute>
               }
             />
-
             <Route path="/not-found" Component={NotFound}></Route>
           </Routes>
         </BrowserRouter>
