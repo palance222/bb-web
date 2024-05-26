@@ -15,29 +15,30 @@ import AccountList from "./components/accounts/account-list";
 import AccountDetails from "./components/accounts/account-details";
 import { RecipientList } from "./components/transfers/recipient-list";
 import { AddRecipient } from "./components/transfers/add-recipient";
+import { RecipientDetails } from "./components/transfers/recipient-details";
 
 function App() {
   const [isLogin, loggedIn] = useState(0);
-  
+
   useEffect(() => {
     if (!isLogin) {
-      sessionStorage.removeItem('logged')
+      sessionStorage.removeItem("logged");
     }
   }, [isLogin]);
 
-  const pageRefConf = ((event:any) => {
-    if (!sessionStorage.getItem('logged')) {
-      console.log('hi')
-      event.preventDefault()
+  const pageRefConf = (event: any) => {
+    if (!sessionStorage.getItem("logged")) {
+      console.log("hi");
+      event.preventDefault();
     }
-  })
-  
+  };
+
   useEffect(() => {
-    window.addEventListener('beforeunload', pageRefConf)
+    window.addEventListener("beforeunload", pageRefConf);
     return () => {
-      window.removeEventListener('beforeunload', pageRefConf)
-    }
-  }, [])
+      window.removeEventListener("beforeunload", pageRefConf);
+    };
+  }, []);
 
   const PrivateRoute = ({ children }: any) => {
     return sessionStorage.getItem("logged") ? (
@@ -48,17 +49,20 @@ function App() {
   };
 
   const onVerifyLogin = () => {
-    loggedIn(1)
-  }
+    loggedIn(1);
+  };
 
   return (
     <div className="container py-3">
       <Provider>
         <BrowserRouter>
-          {(isLogin && sessionStorage.getItem("logged")) ? <NavBar /> : ''}
+          {isLogin && sessionStorage.getItem("logged") ? <NavBar /> : ""}
           <Routes>
             <Route path="/" Component={Login}></Route>
-            <Route path="/auth" element={<Verification checkLogIn={onVerifyLogin} />}></Route>
+            <Route
+              path="/auth"
+              element={<Verification checkLogIn={onVerifyLogin} />}
+            ></Route>
             <Route
               path="/home"
               element={
@@ -96,6 +100,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <AddRecipient />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/recipient-details"
+              element={
+                <PrivateRoute>
+                  <RecipientDetails />
                 </PrivateRoute>
               }
             />

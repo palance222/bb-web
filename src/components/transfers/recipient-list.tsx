@@ -14,6 +14,16 @@ export function RecipientList() {
     return navigate("/add-recipient");
   };
 
+  const recipientDetailsPage = (accName:any,accNumber:any,bankName:any) => () => {
+    return navigate("/recipient-details",{
+        state:{
+            accName,
+            accNumber,
+            bankName
+          },
+      });
+  };
+
   useEffect(() => {
     setRecipient((prevState) => ({
       ...prevState,
@@ -57,7 +67,7 @@ export function RecipientList() {
                         {data.firstName} {data.lastName} <br />
                         {data.accountNumber}
                       </td>
-                      <td className="arrow"><button className="btn btn-success">Transfer</button></td>
+                      <td className="arrow"><button className="btn btn-success" onClick={recipientDetailsPage(`${data.firstName} ${data.lastName}` ,data.accountNumber,data.name)}>Transfer</button></td>
                     </tr>
                   </>
                 );
