@@ -8,11 +8,6 @@ export default function AccountList() {
   let navigate = useNavigate();
 
   const accountDetailsPage = (viewId:any, type:string, type1:string) => () => {
-    //return navigate(`/account-details:${params}`);
-    // return navigate({
-    //   pathname: "/account-details",
-    //   search: createSearchParams({ id: params, type: type }).toString() 
-    // })
     return navigate("/account-details", {
       state:{
           viewId,
@@ -26,7 +21,7 @@ export default function AccountList() {
     loan: [],
     deposit: [],
     loanLoading: false,
-    depositLoadng: false,
+    depositLoading: false,
     clientDetails: "",
   });
 
@@ -88,17 +83,16 @@ export default function AccountList() {
   }, []);
 
   return (
-    <>
-      <div className="account-heading" style={{ backgroundColor: "#77a19e" }}>
+    <div className="width100">
+      <div className="p-2 p-md-3 mb-2 rounded text-body-emphasis bg-body-secondary">
         <h3>Welcome to Bayanihan Bank</h3>
-        <p>
+        <p className="lead my-3">
           Account:
           <span>{auth.state.userName ? " " + auth.state.userName : ""}</span>
         </p>
       </div>
-      <br />
       <div>
-        <div className="card border-success mb-3" style={{ width: "100%" }}>
+        <div className="card border-success mb-3 width100">
           <div className="card-header">Loan Accounts </div>
           <div className="card-body text-success">
             {accountsData.loan.map((data: any) => {
@@ -118,10 +112,20 @@ export default function AccountList() {
                 </>
               );
             })}
+            {(!accountsData.loan.length && !accountsData.loanLoading) && 
+              <div className="text-center">
+                No records
+            </div>}
+            {accountsData.loanLoading && 
+              <div className="text-center">
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>}
           </div>
         </div>
 
-        <div className="card border-success mb-3" style={{ width: "100%" }}>
+        <div className="card border-success mb-3 width100">
           <div className="card-header">Deposit Accounts </div>
           <div className="card-body text-success">
             {accountsData.deposit.map((data: any) => {
@@ -141,9 +145,19 @@ export default function AccountList() {
                 </>
               );
             })}
+            {(!accountsData.deposit.length && !accountsData.depositLoading) && 
+              <div className="text-center">
+                No records
+            </div>}
+            {accountsData.depositLoading && 
+              <div className="text-center">
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
