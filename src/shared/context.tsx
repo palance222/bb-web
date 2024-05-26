@@ -230,7 +230,7 @@ export const Provider = ({ children }: any) => {
    * @param isintrabank
    * @returns
    */
-
+  
   const moneyTransfer = async (
     senderaccountid: any,
     recipientid: any,
@@ -257,7 +257,7 @@ export const Provider = ({ children }: any) => {
       const responseJson = await response.json();
       return responseJson;
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 

@@ -8,7 +8,7 @@ export function RecipientDetails() {
   let navigate = useNavigate();
   const auth = context();
   const [show, SetShow] = useState(false);
-  const [avaiBalance, setAvailBalance] = useState(0);
+  const [selected, setSelected] = useState({accountId: 0, availableBalance: 0});
 
   const setEnable = () => {
     SetShow(true);
@@ -18,7 +18,6 @@ export function RecipientDetails() {
     navigate('/recipient-list');
   }
 
-
   const [state, setState] = useState({
     amount: '',
     error: '',
@@ -26,8 +25,13 @@ export function RecipientDetails() {
     accounts: []
   });
 
-  const selectedInput = ((data:any)=> () => {
-    setAvailBalance(data.availableBalance)
+  const selectedInput = ((e:any) => {
+    const selected:any = state.accounts[e.target.value];
+    setSelected(prevState => ({
+      ...prevState,
+      accountId: selected.accountId,
+      availableBalance: selected.availableBalance
+    }));
   })
 
   const onTransferAmount = () => {
@@ -35,25 +39,17 @@ export function RecipientDetails() {
       ...prevState,
       loading: true,
     }));
-    auth
-      .moneyTransfer(
-        selected.accountId,
-        auth.state.fundsView.id,
-        state.amount,
-        auth.state.fundsView.is_intrabank
-      )
-      .then((data:any) => {
-        if (data.status === 'success') {
-          
-          console.log('Fund transfer completed successfully');
-        } else {
-          setState(prevState => ({
-            ...prevState,
-            error: data.code,
-            loading: false,
-          }));
-        }
-      });
+    auth.moneyTransfer(selected.accountId, route.state.id, state.amount, route.state.is_intrabank).then((data:any) => {
+      if (data && data.status === 'success') {
+        navigate('/recipient-list');
+      } else {
+        setState(prevState => ({
+          ...prevState,
+          error: data.code,
+          loading: false,
+        }));
+      }
+    })
   };
 
   useEffect(() => {
@@ -62,27 +58,7 @@ export function RecipientDetails() {
       loading: true,
     }));
 
-    const data ={
-        "status": "success",
-        "accounts": [
-            {
-                "accountId": 501272,
-                "accountNumber": "001-51-30013896-1",
-                "availableBalance": "9242.23",
-                "productName": "Savings account"
-            },
-            {
-                "accountId": 501354,
-                "accountNumber": "001-51-30013896-2",
-                "availableBalance": "1199.00",
-                "productName": "Savings account"
-            }
-        ]
-    }
-
     auth.listAccounts("deposit", auth.state.clientId).then((data:any) => {
-        console.log(auth.state.clientId);
-        console.log("list",data);
       if (data.status === "success") {
         setState((prevState) => ({
           ...prevState,
@@ -93,71 +69,75 @@ export function RecipientDetails() {
     });
   }, []);
 
+  const handleChange = (e:any) => {
+    setState(prevState => ({
+      ...prevState,
+      amount: e.target.value,
+    }));
+  };
+
   return (
     <>
+      {state.error && (<div className="alert-box-center">
+        <div className="alert alert-danger" role="alert">{state.error}</div>
+      </div>)}
       <h3>Recipient Details</h3>
       <div className="container">
         <div className="details">
-          <p className="name">{route.state.accName}</p>
-          <p className="number">{route.state.accNumber}</p>
-          <p className="bank">{route.state.bankName}</p>
+          {/* <p className="name">{route.state.firstName} {route.state.lastName}</p>
+          <p className="number">{route.state.accountNumber}</p>
+          <p className="bank">{route.state.name}</p> */}
           <button className="btn btn-success" onClick={setEnable}>
             Pay
           </button>
         </div>
         <div className="form-container" hidden={show ? false : true}>
-          <h4>Payee Details</h4>
           <form onSubmit={onTransferAmount}>
-          <p>
-            <label htmlFor="name">
-              Name : <span> {route.state.accName} </span>
-            </label>
-          </p>
-          <p>
-            <label htmlFor="name">
-              Branch Name : <span> {route.state.bankName} </span>
-            </label>
-          </p>
-          <p>
-            <label htmlFor="name">
-              Account Number : <span> {route.state.accName} </span>
-            </label>
-          </p>
-          <p>
-          <select className="form-select" aria-label="Default select example" >
-            {state.accounts.map((data: any) => {
+            <h4>Payee Details</h4>
+            {/* <p>
+              <label>
+                Name : <span> {route.state.firstName} {route.state.lastName} </span>
+              </label>
+            </p>
+            {route.state.name && <p>
+              <label>
+                Branch Name : <span> {route.state.name} </span>
+              </label>
+            </p>} */}
+            <p>
+              <label>
+                Account Number :
+              </label>
+            </p>
+            <p>
+            <select className="form-select" onChange={selectedInput} aria-label="Default select example" >
+              <option value="">Select Account</option>
+              {state.accounts.map((data: any, index:any) => {
                 return (
-                  <>
-                    <option value='Select Account' onChange={selectedInput(data)} >{data.accountNumber}</option>
-                  </>
+                  <option key={index} value={index}>{data.accountNumber}</option>
                 );
-              })} 
-              
-            </select>
-          </p>
-          <p>
-            <label htmlFor="name">
-              Available Balance : <span> {avaiBalance} </span>
-            </label>
-          </p>
-          <p>
-            <label htmlFor="name">
-              Amount :
-              <span>
-                {" "}
-                <input type="text" placeholder="XXXX"/>
-              </span>
-            </label>
-          </p>
+                })} 
+              </select>
+            </p>
+            <p>
+              <label>
+                Available Balance : <span>{selected.availableBalance}</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                Amount : <span><input type="text" onChange={handleChange} placeholder="XXXX"/></span>
+              </label>
+            </p>
+            <div className="action">
+              <button type="submit" className="btn btn-success">
+                Send
+              </button>
+              <button className="btn btn-success"onClick={onCancel}>
+                Cancel
+              </button>
+            </div>
           </form>
-          <div className="action">
-            <button className="btn btn-success" onClick={setEnable}>
-              Send
-            </button>
-            <button className="btn btn-success"onClick={onCancel}>
-              Cancel
-            </button>
-          </div>
         </div>
       </div>
     </>

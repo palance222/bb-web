@@ -14,13 +14,9 @@ export function RecipientList() {
     return navigate("/add-recipient");
   };
 
-  const recipientDetailsPage = (accName:any,accNumber:any,bankName:any) => () => {
+  const recipientDetailsPage = (data:any) => () => {
     return navigate("/recipient-details",{
-        state:{
-            accName,
-            accNumber,
-            bankName
-          },
+        state:data,
       });
   };
 
@@ -30,7 +26,6 @@ export function RecipientList() {
       loading: true,
     }));
     auth.listRecipient(auth.state.clientId).then((data: any) => {
-      console.log("list recipient", data);
       if (data.recipients.length) {
         setRecipient((prevState) => ({
           ...prevState,
@@ -59,17 +54,15 @@ export function RecipientList() {
         <div className="recipient-table">
           <table id="table1" className="table table-bordered">
             <tbody>
-              {receipient.receipientDetails.map((data: any) => {
+              {receipient.receipientDetails.map((data: any, index:any) => {
                 return (
-                  <>
-                    <tr>
-                      <td className="name">
-                        {data.firstName} {data.lastName} <br />
-                        {data.accountNumber}
-                      </td>
-                      <td className="arrow"><button className="btn btn-success" onClick={recipientDetailsPage(`${data.firstName} ${data.lastName}` ,data.accountNumber,data.name)}>Transfer</button></td>
-                    </tr>
-                  </>
+                  <tr key={index}>
+                    <td className="name">
+                      {data.firstName} {data.lastName} <br />
+                      {data.accountNumber}
+                    </td>
+                    <td className="arrow"><button className="btn btn-success" onClick={recipientDetailsPage(data)}>Transfer</button></td>
+                  </tr>
                 );
               })}
             </tbody>

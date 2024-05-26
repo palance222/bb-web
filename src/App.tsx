@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router";
-import { BrowserRouter, Navigate } from "react-router-dom";
+import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/bootstrap/dist/js/bootstrap.bundle.min";
 import "./App.css";
@@ -58,7 +57,7 @@ function App() {
         <BrowserRouter>
           {isLogin && sessionStorage.getItem("logged") ? <NavBar /> : ""}
           <Routes>
-            <Route path="/" Component={Login}></Route>
+            <Route path="/" element={<Login />}></Route>
             <Route
               path="/auth"
               element={<Verification checkLogIn={onVerifyLogin} />}
@@ -111,7 +110,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route path="/not-found" Component={NotFound}></Route>
+            <Route path="/not-found" element={<NotFound />}></Route>
           </Routes>
         </BrowserRouter>
       </Provider>
