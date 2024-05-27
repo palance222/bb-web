@@ -35,7 +35,6 @@ export function AddRecipient(this: any) {
         error: ''
       }));
       auth.getPesonetBanklist().then((data: any) => {
-        console.log("bank list",data);
         if (data.status === 'success') {
           setAdd(prevState => ({
             ...prevState,

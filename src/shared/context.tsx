@@ -231,12 +231,7 @@ export const Provider = ({ children }: any) => {
    * @returns
    */
   
-  const moneyTransfer = async (
-    senderaccountid: any,
-    recipientid: any,
-    amount: any,
-    isintrabank: any
-  ) => {
+  const moneyTransfer = async (senderaccountid: any, recipientid: any, amount: any, isintrabank: any) => {
     try {
       let url = "deposit/transaction/moneytransfer";
       if (isintrabank === 0) {
@@ -251,13 +246,13 @@ export const Provider = ({ children }: any) => {
         body: JSON.stringify({
           senderaccountid: senderaccountid,
           recipientid: recipientid,
-          amount: amount,
+          amount: parseFloat(amount),
         }),
       });
       const responseJson = await response.json();
       return responseJson;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

@@ -34,7 +34,8 @@ export function RecipientDetails() {
     }));
   })
 
-  const onTransferAmount = () => {
+  const onTransferAmount = (event:any) => {
+    event.preventDefault();
     setState(prevState => ({
       ...prevState,
       loading: true,
@@ -84,9 +85,9 @@ export function RecipientDetails() {
       <h3>Recipient Details</h3>
       <div className="container">
         <div className="details">
-          {/* <p className="name">{route.state.firstName} {route.state.lastName}</p>
+          <p className="name">{route.state.firstName} {route.state.lastName}</p>
           <p className="number">{route.state.accountNumber}</p>
-          <p className="bank">{route.state.name}</p> */}
+          <p className="bank">{route.state.name}</p>
           <button className="btn btn-success" onClick={setEnable}>
             Pay
           </button>
@@ -94,7 +95,7 @@ export function RecipientDetails() {
         <div className="form-container" hidden={show ? false : true}>
           <form onSubmit={onTransferAmount}>
             <h4>Payee Details</h4>
-            {/* <p>
+            <p>
               <label>
                 Name : <span> {route.state.firstName} {route.state.lastName} </span>
               </label>
@@ -103,7 +104,7 @@ export function RecipientDetails() {
               <label>
                 Branch Name : <span> {route.state.name} </span>
               </label>
-            </p>} */}
+            </p>}
             <p>
               <label>
                 Account Number :

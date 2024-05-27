@@ -56,7 +56,7 @@ export function RecipientList() {
             <tbody>
               {receipient.receipientDetails.map((data: any, index:any) => {
                 return (
-                  <tr key={index}>
+                  <tr>
                     <td className="name">
                       {data.firstName} {data.lastName} <br />
                       {data.accountNumber}
