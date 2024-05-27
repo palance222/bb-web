@@ -49,7 +49,7 @@ export function RecipientList() {
       <div className="container">
 
         <div className="list-container" style={{ backgroundColor: "#77a19e" }}>
-          <h3>Recipeint list</h3>
+          <h3>Recipient list</h3>
         </div>
         <div className="recipient-table">
           <table id="table1" className="table table-bordered">
