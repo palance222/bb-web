@@ -52,7 +52,7 @@ export function RecipientList() {
           <h3>Recipient list</h3>
         </div>
         <div className="recipient-table">
-          <table id="table1" className="table table-bordered">
+          <table id="table1" className="table list-container-table">
             <tbody>
               {receipient.receipientDetails.map((data: any, index:any) => {
                 return (
