@@ -27,7 +27,6 @@ function App() {
 
   const pageRefConf = (event: any) => {
     if (!sessionStorage.getItem("logged")) {
-      console.log("hi");
       event.preventDefault();
     }
   };
