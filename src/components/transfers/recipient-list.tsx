@@ -48,11 +48,11 @@ export function RecipientList() {
         </div>
       <div className="container">
 
-        <div className="list-container" style={{ backgroundColor: "#77a19e" }}>
-          <h3>Recipient list</h3>
+        <div className="list-container" style={{ backgroundColor: "#01403c" }}>
+          <h3 className="subtitle">Recipient list</h3>
         </div>
         <div className="recipient-table">
-          <table id="table1" className="table list-container-table">
+          <table id="table1" className="table list-container-table table-striped">
             <tbody>
               {receipient.receipientDetails.map((data: any, index:any) => {
                 return (

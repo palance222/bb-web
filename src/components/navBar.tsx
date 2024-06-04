@@ -1,4 +1,8 @@
 import { Link } from "react-router-dom";
+
+const logOut = () => {
+  sessionStorage.removeItem("logged");
+};
 export function NavBar() {
   return (
     <header>
@@ -9,17 +13,8 @@ export function NavBar() {
         <nav className="d-inline-flex mt-2 mt-md-0 ms-md-auto">
           <Link className="me-3 py-2 link-body-emphasis text-decoration-none" to="/home">Home</Link>
           <Link className="me-3 py-2 link-body-emphasis text-decoration-none" to="/account-list">Accounts</Link>
-          <div className="me-3 py-2 link-body-emphasis text-decoration-none">
-            <Link className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" to="/">Transfer</Link>
-            <ul className="dropdown-menu">
-              <li>
-                <Link className="dropdown-item" to="/recipient-list">Inter-transfer</Link>
-              </li>
-              <li>
-                <Link className="dropdown-item" to="/">Intra-transfer</Link>
-              </li>
-            </ul>
-          </div>
+          <Link className="me-3 py-2 link-body-emphasis text-decoration-none" to="/recipient-list">Transfers</Link>
+          <Link className="me-3 py-2 link-body-emphasis text-decoration-none" to="/" onClick={logOut}>Logout</Link>
         </nav>
       </div>
     </header>

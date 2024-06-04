@@ -169,8 +169,8 @@ export function Verification({checkLogIn} :any) {
   return (
     <>
       <div className="title-container">
-        <p>Verification</p>
-        <p>We sent your SMS Code on your registered phone number with us</p>
+        <p className="title-text">Verification</p>
+        <p style={{ color: "#a29e9e" }}>We sent your SMS Code on your registered phone number with us.</p>
       </div>
       {auth.state.success && resendButtonDisabledTime <= 0 && (
         <div className="alert-box-center">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Context as context } from "../../shared/context";
+import './account-details.scss'
 
 const Accounts = () => {
   const auth = context();
@@ -14,6 +15,7 @@ const Accounts = () => {
     const date = new Date(data);
     const month:any = date.toLocaleString('default', {month: 'numeric'});
     const year:any = date.toLocaleString('default', {year: 'numeric'});
+    console.log("date:", (month > 9 ? month : ('0' + month)) + '-' + date.getDate() + '-' + year);
     return (month > 9 ? month : ('0' + month)) + '-' + date.getDate() + '-' + year;
   };
 
@@ -200,7 +202,7 @@ const Accounts = () => {
  
   return (
     <div className="width100">
-      <h1 className="mt-1 mb-4">Loan details</h1>
+      <h1 className="mt-1 mb-4 page-title">Loan details</h1>
       {Object.keys(details).length ? (
         <div className="col-md-6">
           <ul className="list-group bg-body-tertiary border rounded-3 mb-3">
@@ -236,10 +238,11 @@ const Accounts = () => {
           </div>
         </div>
       </div>
-      <table className="table">
+      <table className="table table-striped table-bb">
         <thead className="table-light">
           <tr>
             {columns1[method2['dataKey']].map((item:any, index:any) => {
+              console.log("data",item);
               const keyItem = Object.keys(item)[0];
               return (
                 <th key={index} scope="col">{item[keyItem].text}</th>

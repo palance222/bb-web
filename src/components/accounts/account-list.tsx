@@ -85,9 +85,9 @@ export default function AccountList() {
   return (
     <div className="width100">
       <div className="p-2 p-md-3 mb-2 rounded text-body-emphasis bg-body-secondary">
-        <h3>Welcome to Bayanihan Bank</h3>
+        <h3 className="title-name">Welcome to Bayanihan Bank</h3>
         <p className="lead my-3">
-          Account:
+          <span className="subtitle">Account:</span>
           <span>{auth.state.userName ? " " + auth.state.userName : ""}</span>
         </p>
       </div>

@@ -140,7 +140,7 @@ export function AddRecipient(this: any) {
           <div className="alert alert-danger" role="alert">{state.error}</div>
         </div>)}
         <Modals modalId={show} title="Are you sure to add the recipient" onConfirm={onConfirmAdd} />
-        <h3>Create recipient</h3>
+        <h3 className="page-title">Create recipient</h3>
         <div className="form-container">
           <form onSubmit={onAdd}>
           <div className="rd">

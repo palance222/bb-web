@@ -93,7 +93,7 @@ export function RecipientDetails() {
       {state.error && (<div className="alert-box-center">
         <div className="alert alert-danger" role="alert">{state.error}</div>
       </div>)}
-      <h3>Recipient Details</h3>
+      <h3 className="page-title">Recipient Details</h3>
       <Modals modalId={showModal} title="Are you sure to transfer the amount" onConfirm={onTransferAmount} />
       <div className="container">
         <div className="details">
