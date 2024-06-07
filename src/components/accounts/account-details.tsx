@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { Context as context } from "../../shared/context";
 import './account-details.scss'
 
 const Accounts = () => {
   const auth = context();
   let route =  useLocation(); 
+  const navigate = useNavigate();
   const [accountsData, setAccounts] = useState<any>({
     loan: {dataKey: 'loans', data: {}},
     deposit: {dataKey: 'account', data: {}},
@@ -15,7 +16,6 @@ const Accounts = () => {
     const date = new Date(data);
     const month:any = date.toLocaleString('default', {month: 'numeric'});
     const year:any = date.toLocaleString('default', {year: 'numeric'});
-    console.log("date:", (month > 9 ? month : ('0' + month)) + '-' + date.getDate() + '-' + year);
     return (month > 9 ? month : ('0' + month)) + '-' + date.getDate() + '-' + year;
   };
 
@@ -23,79 +23,72 @@ const Accounts = () => {
     loans: [
       {
         loanNumber: {
-          text: 'Loan Number',
-          style: {fontSize: 16, fontWeight: 'bold'},
+          text: 'Loan Number'
         },
       },
       {
         productName: {
-          text: 'Loan Poduct Name',
-          style: {fontSize: 16, fontWeight: 'bold'},
+          text: 'Loan Poduct Name'
         },
       },
-      {principalBalance: {text: 'Loan Balance', style: {fontSize: 16}}},
+      {principalBalance: {text: 'Loan Balance'}},
       {
         branchName: {
-          text: 'Loan Branch Name',
-          style: {fontSize: 16, fontWeight: 'bold'},
+          text: 'Loan Branch Name'
         },
       },
       {
         maturityDate: {
           text: 'Maturity Date',
-          style: {fontSize: 16, fontWeight: 'bold'},
-          formatter: dateFormatter,
+          formatter: dateFormatter
         },
       },
       {
         grantDate: {
           text: 'Next Payment Due Date',
-          style: {fontSize: 16, fontWeight: 'bold'},
-          formatter: dateFormatter,
+          formatter: dateFormatter
         },
       },
       {
         status: {
-          text: 'Loan Status',
-          style: {fontSize: 16, fontWeight: 'bold'},
+          text: 'Loan Status'
         },
       },
-      {term: {text: 'Tenure', style: {fontSize: 16}}},
+      {
+        term: {
+          text: 'Tenure'
+        }
+      }
     ],
     account: [
       {
         accountNumber: {
-          text: 'Account Number',
-          style: {fontSize: 16, fontWeight: 'bold'},
+          text: 'Account Number'
         },
       },
       {
         productName: {
-          text: 'Deposit Name',
-          style: {fontSize: 16, fontWeight: 'bold'},
+          text: 'Deposit Name'
         },
       },
-      {availableBalance: {text: 'Available Balance', style: {fontSize: 16}}},
+      {availableBalance: {text: 'Available Balance'}},
       {
         branchName: {
-          text: 'Account Branch Name',
-          style: {fontSize: 16, fontWeight: 'bold'},
+          text: 'Account Branch Name'
         },
       },
       {
         maturityDate: {
           text: 'Maturity Date',
-          style: {fontSize: 16, fontWeight: 'bold'},
-          formatter: dateFormatter,
+          formatter: dateFormatter
         },
       },
       {
         interestBalance: {
-          text: 'Interest Balance',
-          style: {fontSize: 16, fontWeight: 'bold'},
+          text: 'Interest Balance'
         },
       },
-      {term: {text: 'Tenure', style: {fontSize: 16}}},
+      {term: {text: 'Tenure'}},
     ],
   };
 
@@ -104,32 +97,36 @@ const Accounts = () => {
       {
         postedDate: {
           text: 'Payment Date',
-          style: {fontSize: 16, fontWeight: 'bold'},
-          formatter: dateFormatter,
+          formatter: dateFormatter
         },
       },
-      {amount: {text: 'Amount', style: {fontSize: 16}}},
+      {amount: {text: 'Amount'}},
     ],
     transactions: [
       {
         postedDate: {
           text: 'Payment Date',
-          style: {fontSize: 14, fontWeight: 'bold'},
-          formatter: dateFormatter,
+          formatter: dateFormatter
         },
       },
       {
         transactionType: {
-          text: 'Type',
-          style: {fontSize: 14},
+          text: 'Type'
         },
       },
-      {amount: {text: 'Amount', style: {fontSize: 14}}},
+      {amount: {text: 'Amount'}},
     ],
   };
   
   const method = accountsData[route.state.type];
   const details = method['data'] ? method['data'] : {};
+
+  useEffect(() => {
+    if (!route.state.viewId) {
+      navigate('/account-list')
+    }
+  }, [route.state.viewId])
+
   useEffect(() => {
     auth.findAccounts(route.state.type, route.state.viewId).then((data:any) => {
       setAccounts((prevState:any) => {
@@ -203,6 +200,19 @@ const Accounts = () => {
   return (
     <div className="width100">
       <h1 className="mt-1 mb-4 page-title">Loan details</h1>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb p-3 bg-body-tertiary rounded-3">
+          <li className="breadcrumb-item">
+            <Link className="link-body-emphasis fw-semibold text-decoration-none" to="/home">Home</Link>
+          </li>
+          <li className="breadcrumb-item">
+            <Link className="link-body-emphasis fw-semibold text-decoration-none" to="/account-list">Accounts</Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {route.state.title}
+          </li>
+        </ol>
+      </nav>
       {Object.keys(details).length ? (
         <div className="col-md-6">
           <ul className="list-group bg-body-tertiary border rounded-3 mb-3">
@@ -257,7 +267,7 @@ const Accounts = () => {
                 {columns1[method2['dataKey']].map((item:any, index:any) => {
                 const keyItem = Object.keys(item)[0];
                 return (
-                  <td key={index} scope="row">{data[keyItem]}</td>
+                  <td key={index} scope="row">{item[keyItem].formatter ? item[keyItem].formatter(data[keyItem]) : data[keyItem]}</td>
                 )
               })}
               </tr>

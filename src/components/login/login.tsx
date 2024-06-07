@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {Context as context} from "../../shared/context"
 import {encrypt} from "../../shared/config"
@@ -6,8 +6,10 @@ import "./login.scss";
 
 export function Login() {
   const auth = context();
+  const username = useRef<any>('');
+  const password = useRef<any>('');
   let navigate = useNavigate();
-  const [login, setLogin] = useState({username: "", password: "", "formerror": "", error: "", loading: false});
+  const [login, setLogin] = useState({username: "", password: "", "usernameerror": "", "passworderror": "", error: "", loading: false});
 
   useEffect(() => {
     if(sessionStorage.getItem('logged')) {
@@ -20,29 +22,35 @@ export function Login() {
     if (!login.username) {
       setLogin(prevState => ({
         ...prevState,
-        'formerror': 'Please fill Username',
+        'usernameerror': 'Please fill Username',
       }));
+      username.current.focus();
       return;
     }
     if (!login.password) {
       setLogin(prevState => ({
         ...prevState,
-        'formerror': 'Please fill Password',
+        'passworderror': 'Please fill Password',
       }));
+      password.current.focus();
       return;
     }
 
     setLogin(prevState => ({
       ...prevState,
       'loading': true,
-      'formerror': ''
+      'usernameerror': '',
+      'passworderror': '',
+      'error': ''
     }));
     auth.saveToken(login).then((data:any) => {
       if (data && data.status === 'mfa') {
         setLogin(prevState => ({
           ...prevState,
           'loading': false,
-          'formerror': ''
+          'usernameerror': '',
+          'passworderror': '',
+          'error': ''
         }));
         auth.setState((prevState: any) => ({
           ...prevState,
@@ -68,6 +76,8 @@ export function Login() {
     setLogin(prevState => ({
       ...prevState,
       [name]: e.target.value,
+      [`${name}error`]: '',
+      'error': ''
     }));
   };
 
@@ -79,29 +89,28 @@ export function Login() {
       {auth.state.error && (<div className="alert-box-center">
         <div className="alert alert-danger" role="alert">{auth.state.error}</div>
       </div>)}
-    <div className="log-form">
-      <div className="logo">
-        <img src="src/assets/logo.png" alt="" />
-      </div>
-      <h2>Login to your account</h2>
-      <form onSubmit={onLogin}>
-        <div className="col-md-12 position-relative">
-          <input type="text" className="form-control" required onChange={handleInput("username")} placeholder="Username" />
-          <div className="invalid-feedback">
-            hi
+      <div className="log-form">
+        <div className="logo">
+          <img src="src/assets/logo.png" alt="" />
+        </div>
+        <h2>Login to your account</h2>
+        <form onSubmit={onLogin} noValidate>
+          <div className="col-md-12 position-relative">
+            <input type="text" ref={username} autoFocus className="form-control" required onChange={handleInput("username")} placeholder="Username" />
+            {login.usernameerror && <div className="text-danger mt-2">{login.usernameerror}</div>}
           </div>
-        </div>
-        <div className="col-md-12">
-          <input type="password" title="username" className="form-control" required onChange={handleInput("password")} placeholder="Password" />
-        </div>
-        <button type="submit" className={login.loading ? "btn disabled": "btn"}>
-          {login.loading ? <>
-            <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
-            <span role="status">Loading...</span>
-          </>: <>Login</>}
-        </button>
-      </form>
-    </div>
-  </>
+          <div className="col-md-12">
+            <input type="password" ref={password} title="username" className="form-control" required onChange={handleInput("password")} placeholder="Password" />
+            {login.passworderror && <div className="text-danger mt-2">{login.passworderror}</div>}
+          </div>
+          <button type="submit" className={login.loading ? "btn disabled": "btn btn-primary"}>
+            {login.loading ? <>
+              <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+              <span role="status">Loading...</span>
+            </>: <>Login</>}
+          </button>
+        </form>
+      </div>
+    </>
   );
 }

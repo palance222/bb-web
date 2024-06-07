@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-
-const logOut = () => {
+const logout = (e:any) => {
+  e.preventDefault();
   sessionStorage.removeItem("logged");
-};
+  window.location.reload();
+}
 export function NavBar() {
   return (
     <header>
@@ -14,7 +15,7 @@ export function NavBar() {
           <Link className="me-3 py-2 link-body-emphasis text-decoration-none" to="/home">Home</Link>
           <Link className="me-3 py-2 link-body-emphasis text-decoration-none" to="/account-list">Accounts</Link>
           <Link className="me-3 py-2 link-body-emphasis text-decoration-none" to="/recipient-list">Transfers</Link>
-          <Link className="me-3 py-2 link-body-emphasis text-decoration-none" to="/" onClick={logOut}>Logout</Link>
+          <Link className="me-3 py-2 link-body-emphasis text-decoration-none" to="/" onClick={logout}>Logout</Link>
         </nav>
       </div>
     </header>

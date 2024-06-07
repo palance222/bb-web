@@ -1,5 +1,8 @@
-body, button:active{
+body {
   margin-bottom:50px!important;
+}
+* {
+  box-sizing: border-box;
 }
 .top{
   margin-top: 20px;

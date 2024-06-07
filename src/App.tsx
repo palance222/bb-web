@@ -39,7 +39,7 @@ function App() {
   }, []);
 
   const PrivateRoute = ({ children }: any) => {
-    return sessionStorage.getItem("logged") ? (
+    return isLogin ? (
       children
     ) : (
       <Navigate to="/" replace />
